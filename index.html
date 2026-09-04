@@ -1,1 +1,790 @@
-.
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>부엉이 키우기</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent
+}
+
+body{
+  margin:0;
+  background:#17151d;
+  color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;
+  overscroll-behavior:none
+}
+
+#app{
+  width:100%;
+  max-width:520px;
+  min-height:100dvh;
+  margin:auto;
+  background:linear-gradient(#25233a,#51425d);
+  padding:16px 14px 24px
+}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px
+}
+
+h1{
+  font-size:22px;
+  margin:0
+}
+
+.sub{
+  font-size:12px;
+  opacity:.65
+}
+
+.card{
+  background:#ffffff12;
+  border:1px solid #ffffff1c;
+  border-radius:20px;
+  backdrop-filter:blur(8px);
+  box-shadow:0 10px 35px #0003
+}
+
+.scene{
+  height:430px;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(#1b203d 0 62%,#283b2e 62%)
+}
+
+.star{
+  position:absolute;
+  width:3px;
+  height:3px;
+  background:#fff;
+  border-radius:50%;
+  opacity:.8
+}
+
+.moon{
+  position:absolute;
+  right:32px;
+  top:30px;
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  background:#fff6c7;
+  box-shadow:0 0 30px #fff6c766
+}
+
+.branch{
+  position:absolute;
+  bottom:76px;
+  left:0;
+  width:100%;
+  height:26px;
+  background:#543b2c;
+  transform:rotate(-3deg)
+}
+
+.owlbox{
+  position:absolute;
+  left:50%;
+  bottom:90px;
+  transform:translateX(-50%);
+  text-align:center;
+  width:100%
+}
+
+.owl{
+  font-size:120px;
+  line-height:1;
+  display:inline-block;
+  user-select:none;
+  touch-action:manipulation;
+  animation:bob 2.8s ease-in-out infinite
+}
+
+.egg{
+  font-size:110px;
+  animation:none;
+  filter:drop-shadow(0 9px 8px #0005)
+}
+
+@keyframes bob{
+  50%{
+    transform:translateY(-8px) rotate(1deg)
+  }
+}
+
+.speech{
+  display:block;
+  margin:0 auto 8px;
+  background:#fff;
+  color:#29232a;
+  border-radius:14px;
+  padding:9px 12px;
+  width:max-content;
+  max-width:85%;
+  font-size:13px;
+  font-weight:800
+}
+
+.info{
+  padding:14px;
+  margin-top:12px
+}
+
+.name{
+  font-weight:900;
+  font-size:18px
+}
+
+.stage{
+  font-size:12px;
+  opacity:.65;
+  margin-top:3px
+}
+
+.progress{
+  height:12px;
+  background:#ffffff1b;
+  border-radius:99px;
+  overflow:hidden;
+  margin-top:9px
+}
+
+.progress>i{
+  display:block;
+  height:100%;
+  width:0;
+  background:#fff;
+  border-radius:99px;
+  transition:.15s
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:12px
+}
+
+.stat{
+  background:#0002;
+  border-radius:12px;
+  padding:8px;
+  font-size:12px
+}
+
+.bar{
+  height:7px;
+  background:#ffffff1b;
+  border-radius:99px;
+  margin-top:5px;
+  overflow:hidden
+}
+
+.bar i{
+  display:block;
+  height:100%;
+  background:#fff;
+  width:50%
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:12px
+}
+
+button{
+  border:0;
+  border-radius:14px;
+  padding:13px 5px;
+  background:#ffffff18;
+  color:#fff;
+  font-weight:800;
+  font-size:13px;
+  min-height:48px
+}
+
+button:active{
+  transform:scale(.96);
+  background:#fff3
+}
+
+button:disabled{
+  opacity:.3
+}
+
+.namebox{
+  display:flex;
+  gap:7px;
+  margin-top:12px;
+  padding:10px
+}
+
+.namebox input{
+  min-width:0;
+  flex:1;
+  border:0;
+  border-radius:12px;
+  padding:11px;
+  background:#fff;
+  color:#222;
+  font-size:14px
+}
+
+.log{
+  margin-top:12px;
+  padding:12px;
+  font-size:12px;
+  height:120px;
+  overflow:auto;
+  line-height:1.6
+}
+
+#eggHint{
+  font-size:13px;
+  margin-top:8px;
+  opacity:.75
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+<header>
+  <div>
+    <h1>🦉 부엉이 키우기</h1>
+    <div class="sub">알을 100번 터치해서 부화시키세요</div>
+  </div>
+  <div id="time" class="sub"></div>
+</header>
+
+<div class="card scene" id="scene">
+
+  <div class="moon"></div>
+
+  <div class="star" style="left:12%;top:14%"></div>
+  <div class="star" style="left:28%;top:25%"></div>
+  <div class="star" style="left:47%;top:12%"></div>
+  <div class="star" style="left:72%;top:18%"></div>
+  <div class="star" style="left:84%;top:34%"></div>
+
+  <div class="branch"></div>
+
+  <div class="owlbox">
+
+    <div class="speech" id="speech">
+      알을 터치하세요! (0/100)
+    </div>
+
+    <div id="owl" class="owl egg" role="button" aria-label="알 터치">
+      🥚
+    </div>
+
+  </div>
+
+</div>
+
+<div class="card info">
+
+  <div class="name" id="name">
+    아직 알이에요
+  </div>
+
+  <div class="stage" id="stage">
+    100번 터치하면 부화합니다
+  </div>
+
+  <div class="progress">
+    <i id="hatchBar"></i>
+  </div>
+
+  <div id="eggHint">
+    🥚 알을 빠르게 연속으로 터치해도 됩니다.
+  </div>
+
+  <div class="stats">
+
+    <div class="stat">
+      🍗 배고픔
+      <div class="bar">
+        <i id="hunger"></i>
+      </div>
+    </div>
+
+    <div class="stat">
+      🧼 청결도
+      <div class="bar">
+        <i id="clean"></i>
+      </div>
+    </div>
+
+    <div class="stat">
+      ❤️ 애정도
+      <div class="bar">
+        <i id="love"></i>
+      </div>
+    </div>
+
+    <div class="stat">
+      😴 피로도
+      <div class="bar">
+        <i id="tired"></i>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="actions">
+
+  <button id="feed">🍗 밥주기</button>
+  <button id="water">💧 물주기</button>
+  <button id="bath">🛁 목욕</button>
+
+  <button id="pet">🖐️ 쓰다듬기</button>
+  <button id="walk">🌳 산책</button>
+  <button id="reset">🔄 다시 시작</button>
+
+</div>
+
+<div class="card namebox">
+
+  <input
+    id="nameInput"
+    maxlength="12"
+    placeholder="부엉이 이름"
+  >
+
+  <button id="saveName">
+    이름 저장
+  </button>
+
+</div>
+
+<div class="card log" id="log"></div>
+
+</div>
+
+<script>
+
+const KEY = "OWL_MOBILE_V1";
+
+const fresh = () => ({
+  hatched:false,
+  taps:0,
+  growth:0,
+  color:null,
+  personality:null,
+  name:"밤이",
+  hunger:80,
+  clean:80,
+  love:20,
+  tired:20,
+  msg:"알을 터치하세요! (0/100)"
+});
+
+let s;
+
+try{
+  s = JSON.parse(localStorage.getItem(KEY)) || fresh();
+}catch(e){
+  s = fresh();
+}
+
+const colors = [
+  "브라운",
+  "화이트",
+  "블랙"
+];
+
+const personalities = [
+  "애교쟁이",
+  "느긋한",
+  "장난꾸러기",
+  "호기심 많은",
+  "겁이 많은"
+];
+
+const $ = id => document.getElementById(id);
+
+const clamp = x =>
+  Math.max(0,Math.min(100,x));
+
+function save(){
+  localStorage.setItem(KEY,JSON.stringify(s));
+}
+
+function log(t){
+
+  $("log").innerHTML =
+    "<div>" +
+    new Date().toLocaleTimeString(
+      "ko-KR",
+      {
+        hour:"2-digit",
+        minute:"2-digit"
+      }
+    ) +
+    " · " +
+    t +
+    "</div>" +
+    $("log").innerHTML;
+}
+
+function render(){
+
+  const st =
+    !s.hatched
+      ? "알"
+      : s.growth < 30
+        ? "아기 부엉이"
+        : s.growth < 70
+          ? "어린 부엉이"
+          : "성체 부엉이";
+
+  $("owl").textContent =
+    s.hatched ? "🦉" : "🥚";
+
+  $("owl").className =
+    "owl " +
+    (!s.hatched ? "egg" : "");
+
+  $("speech").textContent = s.msg;
+
+  $("name").textContent =
+    s.hatched
+      ? s.name
+      : "아직 알이에요";
+
+  $("stage").textContent =
+    s.hatched
+      ? `${st} · ${s.color} · ${s.personality}`
+      : `알 · ${s.taps}/100번 터치`;
+
+  $("hatchBar").style.width =
+    s.hatched
+      ? "100%"
+      : s.taps + "%";
+
+  $("eggHint").textContent =
+    s.hatched
+      ? "부엉이를 터치하면 애정도가 올라가요."
+      : "🥚 알을 빠르게 연속으로 터치해도 됩니다.";
+
+  ["hunger","clean","love","tired"]
+    .forEach(k => {
+      $(k).style.width = s[k] + "%";
+    });
+
+  ["feed","water","bath","pet","walk"]
+    .forEach(k => {
+      $(k).disabled = !s.hatched;
+    });
+
+  $("nameInput").value = s.name;
+
+  save();
+}
+
+function tapEgg(){
+
+  if(s.hatched){
+
+    s.love = clamp(s.love + 2);
+
+    s.msg =
+      s.love > 75
+        ? "좋아... 옆에 있어줘."
+        : "응? 왜 불렀어?";
+
+    render();
+
+    return;
+  }
+
+  s.taps++;
+
+  if(s.taps >= 100){
+
+    s.taps = 100;
+    s.hatched = true;
+
+    s.color =
+      colors[
+        Math.floor(
+          Math.random() * colors.length
+        )
+      ];
+
+    s.personality =
+      personalities[
+        Math.floor(
+          Math.random() * personalities.length
+        )
+      ];
+
+    s.msg = "🐣 부화했다! 안녕!";
+
+    log(
+      `부화 성공! ${s.color} 부엉이 / ${s.personality}`
+    );
+
+    navigator.vibrate?.([40,30,80]);
+
+  }else{
+
+    const m = [
+      "톡!",
+      "톡톡!",
+      "알이 흔들려요!",
+      "안에서 움직여요!",
+      "금이 갔어요!",
+      "조금만 더!"
+    ];
+
+    s.msg =
+      m[
+        Math.floor(
+          Math.random() * m.length
+        )
+      ] +
+      ` (${s.taps}/100)`;
+
+    navigator.vibrate?.(8);
+  }
+
+  render();
+}
+
+$("owl").addEventListener(
+  "pointerup",
+  tapEgg
+);
+
+function act(k){
+
+  if(!s.hatched) return;
+
+  if(k === "feed"){
+
+    s.hunger =
+      clamp(s.hunger + 25);
+
+    s.love =
+      clamp(s.love + 3);
+
+    s.tired =
+      clamp(s.tired - 3);
+
+    s.msg = "냠냠! 맛있어!";
+
+    log("먹이를 먹었습니다.");
+  }
+
+  if(k === "water"){
+
+    s.clean =
+      clamp(s.clean + 3);
+
+    s.love =
+      clamp(s.love + 1);
+
+    s.msg = "꿀꺽... 시원해!";
+  }
+
+  if(k === "bath"){
+
+    s.clean = 100;
+
+    s.love =
+      clamp(s.love + 5);
+
+    s.tired =
+      clamp(s.tired + 4);
+
+    s.msg =
+      "푸드득! 털 말려줘!";
+
+    log(
+      "목욕하고 몸을 부르르 털었습니다."
+    );
+  }
+
+  if(k === "pet"){
+
+    s.love =
+      clamp(s.love + 6);
+
+    s.tired =
+      clamp(s.tired - 2);
+
+    s.msg =
+      s.love > 75
+        ? "좋아... 계속 쓰다듬어줘."
+        : "후후... 기분 좋아.";
+  }
+
+  if(k === "walk"){
+
+    s.tired =
+      clamp(s.tired + 12);
+
+    s.hunger =
+      clamp(s.hunger - 8);
+
+    s.clean =
+      clamp(s.clean - 10);
+
+    s.love =
+      clamp(s.love + 8);
+
+    s.msg = [
+      "나무 위에 올라갈래!",
+      "저기 뭐가 움직였어!",
+      "같이 걷는 거 좋아!",
+      "바람 좋다!"
+    ][
+      Math.floor(Math.random() * 4)
+    ];
+
+    log(
+      "부엉이와 산책했습니다."
+    );
+  }
+
+  render();
+}
+
+["feed","water","bath","pet","walk"]
+  .forEach(k => {
+
+    $(k).addEventListener(
+      "pointerup",
+      () => act(k)
+    );
+
+  });
+
+$("saveName").addEventListener(
+  "pointerup",
+  () => {
+
+    s.name =
+      $("nameInput").value.trim() || "밤이";
+
+    s.msg =
+      `${s.name}! 하고 불러주는 게 좋아.`;
+
+    render();
+  }
+);
+
+$("reset").addEventListener(
+  "pointerup",
+  () => {
+
+    localStorage.removeItem(KEY);
+
+    s = fresh();
+
+    $("log").innerHTML = "";
+
+    log(
+      "새로운 알이 도착했습니다."
+    );
+
+    render();
+  }
+);
+
+setInterval(
+  () => {
+
+    if(s.hatched){
+
+      s.growth =
+        clamp(s.growth + .35);
+
+      s.hunger =
+        clamp(s.hunger - .9);
+
+      s.clean =
+        clamp(s.clean - .45);
+
+      s.tired =
+        clamp(s.tired + .55);
+
+      if(s.hunger < 25){
+
+        s.msg =
+          "배고파... 먹이 줘!";
+
+      }else if(s.tired > 82){
+
+        s.msg =
+          "졸려... 자고 싶어.";
+
+      }else if(s.clean < 20){
+
+        s.msg =
+          "깃털이 찝찝해...";
+
+      }else if(Math.random() < .08){
+
+        s.msg = [
+          "고개 갸웃.",
+          "깃털 정리 중...",
+          "후우...",
+          "날개 스트레칭!"
+        ][
+          Math.floor(Math.random() * 4)
+        ];
+      }
+
+      render();
+    }
+
+  },
+  3000
+);
+
+setInterval(
+  () => {
+
+    $("time").textContent =
+      new Date().toLocaleTimeString(
+        "ko-KR",
+        {
+          hour:"2-digit",
+          minute:"2-digit"
+        }
+      );
+
+  },
+  1000
+);
+
+log(
+  s.hatched
+    ? "부엉이가 기다리고 있습니다."
+    : "새로운 알이 도착했습니다. 알을 터치하세요!"
+);
+
+render();
+
+</script>
+
+</body>
+</html>
