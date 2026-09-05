@@ -17,844 +17,394 @@
 
 <style>
 
-/* =========================================================
-   기본
-========================================================= */
-
 *{
     box-sizing:border-box;
-
     -webkit-tap-highlight-color:transparent;
-
     -webkit-user-select:none;
     user-select:none;
-
     -webkit-touch-callout:none;
-
     -webkit-user-drag:none;
     user-drag:none;
 }
 
-
 html,
 body{
-
     width:100%;
     height:100%;
-
     margin:0;
     padding:0;
-
     overflow:hidden;
-
     background:#17110f;
-
     -webkit-text-size-adjust:100%;
-
     touch-action:none;
-
     overscroll-behavior:none;
 }
 
-
 body{
-
     display:flex;
-
     align-items:center;
     justify-content:center;
-
     font-family:
         -apple-system,
         BlinkMacSystemFont,
         "Apple SD Gothic Neo",
         "Noto Sans KR",
         sans-serif;
-
     touch-action:none;
-
     overscroll-behavior:none;
 }
 
-
-/* =========================================================
-   게임
-========================================================= */
-
 #game{
-
     position:relative;
-
     width:min(100vw,100vh);
     height:min(100vw,100vh);
-
     max-width:620px;
     max-height:620px;
-
     overflow:hidden;
-
     background:#5a4032;
-
     border-radius:8%;
-
     isolation:isolate;
-
     touch-action:none;
-
     -webkit-user-select:none;
     user-select:none;
-
     -webkit-touch-callout:none;
-
     overscroll-behavior:none;
-
     transform-origin:center center;
 }
 
-
-/* =========================================================
-   배경
-========================================================= */
-
 #background{
-
     position:absolute;
-
     inset:0;
-
     width:100%;
     height:100%;
-
     object-fit:cover;
-
     z-index:1;
-
     pointer-events:none;
-
     -webkit-user-drag:none;
-
     -webkit-user-select:none;
     user-select:none;
-
-    transition:
-        opacity .45s ease;
+    transition:opacity .45s ease;
 }
-
-
-/* =========================================================
-   밤 오버레이
-========================================================= */
 
 #nightOverlay{
-
     position:absolute;
-
     inset:0;
-
     z-index:2;
-
     pointer-events:none;
-
-    background:
-        rgba(
-            18,
-            10,
-            8,
-            0
-        );
-
-    transition:
-        background .8s ease;
+    background:rgba(18,10,8,0);
+    transition:background .8s ease;
 }
-
 
 #game.night #nightOverlay{
-
-    background:
-        rgba(
-            25,
-            13,
-            12,
-            .12
-        );
+    background:rgba(25,13,12,.12);
 }
 
-
-/* =========================================================
-   소품 영역
-========================================================= */
-
 #props{
-
     position:absolute;
-
     inset:0;
-
     z-index:5;
-
     pointer-events:none;
 }
 
-
-/* =========================================================
-   공통 소품
-========================================================= */
-
 .prop{
-
     position:absolute;
-
     display:block;
-
     object-fit:contain;
-
     pointer-events:auto;
-
     cursor:pointer;
-
     -webkit-user-select:none;
     user-select:none;
-
     -webkit-touch-callout:none;
-
     -webkit-user-drag:none;
-
     touch-action:none;
-
     transform-origin:center bottom;
-
-    transition:
-        transform .12s ease;
+    transition:transform .12s ease;
 }
 
 
 /* =========================================================
    선반
-   조금 아래로 이동
+   아래로 이동해서 책과 맞춤
 ========================================================= */
 
 #shelf{
-
     width:39%;
-
     left:2%;
-
-    top:18%;
-
+    top:21%;
     z-index:6;
 }
 
 
 /* =========================================================
    선반 위 책
-   크기 축소 + 선반과 함께 아래로 이동
+   책 밑부분이 선반 윗부분에 닿도록 위치 조정
 ========================================================= */
 
 #booksStanding{
-
     width:19%;
-
     left:9%;
-
-    top:18.5%;
-
+    top:18.8%;
     z-index:7;
-
-    transform-origin:
-        50% 100%;
+    transform-origin:50% 100%;
 }
 
-
-/* =========================================================
-   오른쪽 바닥 책
-   벽 쪽으로 이동
-========================================================= */
 
 #booksHorizontal{
-
     width:18%;
-
     left:auto;
-
     right:7%;
-
     top:auto;
-
     bottom:19%;
-
     z-index:11;
-
-    transform-origin:
-        50% 100%;
+    transform-origin:50% 100%;
 }
-
-
-/* =========================================================
-   화분
-========================================================= */
 
 #plant{
-
     width:23%;
-
     left:3%;
-
     bottom:19%;
-
     z-index:8;
-
-    transform-origin:
-        50% 100%;
+    transform-origin:50% 100%;
 }
-
-
-/* =========================================================
-   램프
-========================================================= */
 
 #lamp{
-
     width:22%;
-
     right:3%;
-
     top:4%;
-
     z-index:7;
-
-    transform-origin:
-        50% 7%;
+    transform-origin:50% 7%;
 }
-
-
-/* =========================================================
-   쪽지
-========================================================= */
 
 #note{
-
     width:15%;
-
     right:15%;
-
     top:27%;
-
     z-index:8;
-
-    transform-origin:
-        50% 5%;
+    transform-origin:50% 5%;
 }
-
-
-/* =========================================================
-   둥지
-========================================================= */
 
 #nest{
-
     position:absolute;
-
     width:57%;
-
     left:50%;
-
     bottom:12%;
-
-    transform:
-        translateX(-50%);
-
+    transform:translateX(-50%);
     z-index:10;
-
     pointer-events:auto;
-
     cursor:pointer;
-
     touch-action:none;
-
     -webkit-user-select:none;
     user-select:none;
-
     -webkit-touch-callout:none;
-
     -webkit-user-drag:none;
-
-    transform-origin:
-        center bottom;
+    transform-origin:center bottom;
 }
 
-
-/* =========================================================
-   부엉이 영역
-   큰 방석에 맞춰 부엉이 크기 축소
-========================================================= */
-
 #owlArea{
-
     position:absolute;
-
     left:50%;
-
     bottom:18%;
-
     width:37%;
-
     height:37%;
-
-    transform:
-        translateX(-50%);
-
+    transform:translateX(-50%);
     z-index:20;
-
     display:flex;
-
     justify-content:center;
-
     align-items:flex-end;
-
     pointer-events:auto;
-
     cursor:pointer;
-
     touch-action:none;
-
     -webkit-user-select:none;
     user-select:none;
-
     -webkit-touch-callout:none;
-
     -webkit-user-drag:none;
-
     overscroll-behavior:none;
 }
 
-
-/* =========================================================
-   부엉이
-========================================================= */
-
 #owl{
-
     display:block;
-
     width:auto;
     height:auto;
-
     max-width:100%;
     max-height:100%;
-
     object-fit:contain;
-
     pointer-events:none;
-
     -webkit-user-drag:none;
-
     user-select:none;
     -webkit-user-select:none;
-
-    filter:
-        drop-shadow(
-            0 3px 0
-            rgba(
-                55,
-                34,
-                25,
-                .20
-            )
-        );
-
-    transform-origin:
-        center bottom;
-
+    filter:drop-shadow(
+        0 3px 0
+        rgba(55,34,25,.20)
+    );
+    transform-origin:center bottom;
     transition:
         transform .18s ease,
         opacity .15s ease;
 }
 
-
-/* =========================================================
-   부엉이 꾹 누르기
-========================================================= */
-
 #owlArea.long-press #owl{
-
     transform:
         translateY(-26px)
         scale(1.04);
-
-    transition:
-        transform .18s ease;
+    transition:transform .18s ease;
 }
-
-
-/* =========================================================
-   부엉이 점프
-========================================================= */
 
 .owl-jump{
-
-    animation:
-        owlJump
-        .34s
-        ease-out;
+    animation:owlJump .34s ease-out;
 }
-
 
 @keyframes owlJump{
-
     0%{
-
-        transform:
-            translateY(0)
-            scale(1);
+        transform:translateY(0) scale(1);
     }
-
     45%{
-
-        transform:
-            translateY(-12px)
-            scale(1.04);
+        transform:translateY(-12px) scale(1.04);
     }
-
     100%{
-
-        transform:
-            translateY(0)
-            scale(1);
+        transform:translateY(0) scale(1);
     }
 }
-
-
-/* =========================================================
-   부엉이 흔들림
-========================================================= */
 
 .owl-wiggle{
-
-    animation:
-        owlWiggle
-        .42s
-        ease-in-out;
+    animation:owlWiggle .42s ease-in-out;
 }
-
 
 @keyframes owlWiggle{
-
-    0%{
-        transform:rotate(0);
-    }
-
-    20%{
-        transform:rotate(-5deg);
-    }
-
-    40%{
-        transform:rotate(5deg);
-    }
-
-    60%{
-        transform:rotate(-3deg);
-    }
-
-    80%{
-        transform:rotate(2deg);
-    }
-
-    100%{
-        transform:rotate(0);
-    }
+    0%{transform:rotate(0);}
+    20%{transform:rotate(-5deg);}
+    40%{transform:rotate(5deg);}
+    60%{transform:rotate(-3deg);}
+    80%{transform:rotate(2deg);}
+    100%{transform:rotate(0);}
 }
-
-
-/* =========================================================
-   소품 흔들림
-========================================================= */
 
 .shake{
-
-    animation:
-        propShake
-        .45s
-        ease-in-out;
+    animation:propShake .45s ease-in-out;
 }
-
 
 @keyframes propShake{
-
     0%{
-
-        transform:
-            rotate(0)
-            translateX(0);
+        transform:rotate(0) translateX(0);
     }
-
     20%{
-
-        transform:
-            rotate(-4deg)
-            translateX(-2px);
+        transform:rotate(-4deg) translateX(-2px);
     }
-
     40%{
-
-        transform:
-            rotate(4deg)
-            translateX(2px);
+        transform:rotate(4deg) translateX(2px);
     }
-
     60%{
-
-        transform:
-            rotate(-3deg)
-            translateX(-1px);
+        transform:rotate(-3deg) translateX(-1px);
     }
-
     80%{
-
-        transform:
-            rotate(2deg)
-            translateX(1px);
+        transform:rotate(2deg) translateX(1px);
     }
-
     100%{
-
-        transform:
-            rotate(0)
-            translateX(0);
+        transform:rotate(0) translateX(0);
     }
 }
-
-
-/* =========================================================
-   램프 흔들림
-========================================================= */
 
 .lamp-shake{
-
-    animation:
-        lampShake
-        .65s
-        ease-in-out;
+    animation:lampShake .65s ease-in-out;
 }
-
 
 @keyframes lampShake{
-
-    0%{
-        transform:rotate(0);
-    }
-
-    20%{
-        transform:rotate(-5deg);
-    }
-
-    40%{
-        transform:rotate(4deg);
-    }
-
-    60%{
-        transform:rotate(-3deg);
-    }
-
-    80%{
-        transform:rotate(2deg);
-    }
-
-    100%{
-        transform:rotate(0);
-    }
+    0%{transform:rotate(0);}
+    20%{transform:rotate(-5deg);}
+    40%{transform:rotate(4deg);}
+    60%{transform:rotate(-3deg);}
+    80%{transform:rotate(2deg);}
+    100%{transform:rotate(0);}
 }
-
-
-/* =========================================================
-   둥지 흔들림
-========================================================= */
 
 .nest-shake{
-
-    animation:
-        nestShake
-        .45s
-        ease-in-out;
+    animation:nestShake .45s ease-in-out;
 }
-
 
 @keyframes nestShake{
-
     0%{
-
-        transform:
-            translateX(-50%)
-            rotate(0);
+        transform:translateX(-50%) rotate(0);
     }
-
     25%{
-
-        transform:
-            translateX(-50%)
-            rotate(-3deg);
+        transform:translateX(-50%) rotate(-3deg);
     }
-
     50%{
-
-        transform:
-            translateX(-50%)
-            rotate(3deg);
+        transform:translateX(-50%) rotate(3deg);
     }
-
     75%{
-
-        transform:
-            translateX(-50%)
-            rotate(-2deg);
+        transform:translateX(-50%) rotate(-2deg);
     }
-
     100%{
-
-        transform:
-            translateX(-50%)
-            rotate(0);
+        transform:translateX(-50%) rotate(0);
     }
 }
 
-
-/* =========================================================
-   말풍선
-========================================================= */
-
 #bubble{
-
     position:absolute;
-
     left:50%;
-
     bottom:54%;
-
     min-width:68px;
     max-width:180px;
-
-    padding:
-        9px 14px;
-
+    padding:9px 14px;
     transform:
         translateX(-50%)
         translateY(6px)
         scale(.8);
-
     opacity:0;
-
     z-index:50;
-
     background:#fff6e3;
-
-    border:
-        3px solid #593a2b;
-
+    border:3px solid #593a2b;
     border-radius:18px;
-
     color:#3d281f;
-
-    font-size:
-        clamp(
-            17px,
-            4vw,
-            25px
-        );
-
+    font-size:clamp(17px,4vw,25px);
     font-weight:900;
-
     line-height:1;
-
     text-align:center;
-
     white-space:nowrap;
-
     box-shadow:
         0 3px 0
-        rgba(
-            70,
-            42,
-            30,
-            .20
-        );
-
+        rgba(70,42,30,.20);
     pointer-events:none;
-
     transition:
         opacity .15s ease,
         transform .15s ease;
 }
 
-
 #bubble.show{
-
     opacity:1;
-
     transform:
         translateX(-50%)
         translateY(0)
         scale(1);
 }
 
-
-/* =========================================================
-   말풍선 꼬리
-========================================================= */
-
 #bubble::after{
-
     content:"";
-
     position:absolute;
-
     left:50%;
-
     bottom:-10px;
-
     width:15px;
     height:15px;
-
     background:#fff6e3;
-
-    border-right:
-        3px solid #593a2b;
-
-    border-bottom:
-        3px solid #593a2b;
-
+    border-right:3px solid #593a2b;
+    border-bottom:3px solid #593a2b;
     transform:
         translateX(-50%)
         rotate(45deg);
 }
 
-
-/* =========================================================
-   효과
-========================================================= */
-
 #effects{
-
     position:absolute;
-
     inset:0;
-
     z-index:45;
-
     pointer-events:none;
-
     overflow:hidden;
 }
 
-
 .effect{
-
     position:absolute;
-
     width:11%;
-
     height:auto;
-
     object-fit:contain;
-
     animation:
         effectPop
         .85s
@@ -862,293 +412,150 @@ body{
         forwards;
 }
 
-
 @keyframes effectPop{
-
     0%{
-
         opacity:0;
-
         transform:
             scale(.3)
             translateY(15px);
     }
-
     20%{
         opacity:1;
     }
-
     100%{
-
         opacity:0;
-
         transform:
             scale(1.15)
             translateY(-35px);
     }
 }
 
-
-/* =========================================================
-   버튼
-========================================================= */
-
 #buttons{
-
     position:absolute;
-
     left:4.2%;
     right:4.2%;
-
     bottom:2.5%;
-
     height:18%;
-
     display:grid;
-
-    grid-template-columns:
-        repeat(4,1fr);
-
+    grid-template-columns:repeat(4,1fr);
     gap:2.5%;
-
     z-index:60;
-
     touch-action:none;
 }
-
 
 .action{
-
     border:0;
-
     padding:0;
     margin:0;
-
     background:transparent;
-
     display:flex;
-
     align-items:center;
     justify-content:center;
-
     cursor:pointer;
-
     touch-action:none;
-
     -webkit-user-select:none;
     user-select:none;
-
     -webkit-touch-callout:none;
-
     -webkit-user-drag:none;
 }
 
-
 .action img{
-
     width:100%;
     height:100%;
-
     object-fit:contain;
-
     pointer-events:none;
-
     -webkit-user-drag:none;
-
     user-select:none;
     -webkit-user-select:none;
-
     filter:
         drop-shadow(
             0 2px 0
-            rgba(
-                65,
-                39,
-                28,
-                .20
-            )
+            rgba(65,39,28,.20)
         );
-
-    transition:
-        transform .1s ease;
+    transition:transform .1s ease;
 }
-
 
 .action:active img{
-
-    transform:
-        scale(.92);
+    transform:scale(.92);
 }
-
-
-/* =========================================================
-   시작 화면
-========================================================= */
 
 #startScreen{
-
     position:absolute;
-
     inset:0;
-
     z-index:100;
-
     display:flex;
-
     align-items:center;
     justify-content:center;
-
-    background:
-        rgba(
-            38,
-            24,
-            18,
-            .22
-        );
+    background:rgba(38,24,18,.22);
 }
 
-
 #startScreen.hidden{
-
     display:none;
 }
 
-
 #startCard{
-
     width:70%;
-
-    padding:
-        22px 18px;
-
+    padding:22px 18px;
     background:#fff4df;
-
-    border:
-        4px solid #5b3b2b;
-
+    border:4px solid #5b3b2b;
     border-radius:24px;
-
     text-align:center;
-
     box-shadow:
         0 5px 0
-        rgba(
-            65,
-            40,
-            28,
-            .25
-        );
+        rgba(65,40,28,.25);
 }
-
 
 #startEgg{
-
     display:block;
-
     width:32%;
-
     max-width:125px;
-
-    margin:
-        0 auto
-        9px;
+    margin:0 auto 9px;
 }
 
-
 #startTitle{
-
     color:#4c3023;
-
-    font-size:
-        clamp(
-            22px,
-            5vw,
-            34px
-        );
-
+    font-size:clamp(22px,5vw,34px);
     font-weight:900;
-
     margin-bottom:5px;
 }
 
-
 #startSub{
-
     color:#4c3023;
-
     opacity:.7;
-
-    font-size:
-        clamp(
-            12px,
-            2.8vw,
-            17px
-        );
-
+    font-size:clamp(12px,2.8vw,17px);
     font-weight:700;
-
     margin-bottom:17px;
 }
 
-
 #startButton{
-
-    border:
-        3px solid #5b3b2b;
-
+    border:3px solid #5b3b2b;
     border-radius:15px;
-
-    padding:
-        10px 24px;
-
+    padding:10px 24px;
     background:#e7c28f;
-
     color:#4c3023;
-
-    font-size:
-        clamp(
-            15px,
-            3.5vw,
-            20px
-        );
-
+    font-size:clamp(15px,3.5vw,20px);
     font-weight:900;
-
     box-shadow:
         0 3px 0
         #8b6247;
-
     cursor:pointer;
-
     touch-action:none;
 }
 
-
 #startButton:active{
-
-    transform:
-        translateY(2px);
-
+    transform:translateY(2px);
     box-shadow:
         0 1px 0
         #8b6247;
 }
 
-
-/* =========================================================
-   모바일
-========================================================= */
-
 @media(max-width:430px){
 
     #game{
-
         width:100vw;
         height:100vw;
-
         max-width:none;
         max-height:none;
-
         border-radius:0;
     }
 }
@@ -1157,15 +564,9 @@ body{
 
 </head>
 
-
 <body>
 
 <div id="game">
-
-
-    <!-- =====================================================
-         배경
-    ====================================================== -->
 
     <img
         id="background"
@@ -1176,15 +577,7 @@ body{
 
     <div id="nightOverlay"></div>
 
-
-    <!-- =====================================================
-         소품
-    ====================================================== -->
-
     <div id="props">
-
-
-        <!-- 왼쪽 선반 -->
 
         <img
             id="shelf"
@@ -1194,9 +587,6 @@ body{
             draggable="false"
         >
 
-
-        <!-- 선반 위 책 -->
-
         <img
             id="booksStanding"
             class="prop"
@@ -1204,9 +594,6 @@ body{
             alt=""
             draggable="false"
         >
-
-
-        <!-- 왼쪽 화분 -->
 
         <img
             id="plant"
@@ -1216,9 +603,6 @@ body{
             draggable="false"
         >
 
-
-        <!-- 오른쪽 램프 -->
-
         <img
             id="lamp"
             class="prop"
@@ -1227,9 +611,6 @@ body{
             draggable="false"
         >
 
-
-        <!-- 오른쪽 쪽지 -->
-
         <img
             id="note"
             class="prop"
@@ -1237,9 +618,6 @@ body{
             alt=""
             draggable="false"
         >
-
-
-        <!-- 오른쪽 바닥 책 -->
 
         <img
             id="booksHorizontal"
@@ -1251,22 +629,12 @@ body{
 
     </div>
 
-
-    <!-- =====================================================
-         큰 방석
-    ====================================================== -->
-
     <img
         id="nest"
         src="nest.png"
         alt=""
         draggable="false"
     >
-
-
-    <!-- =====================================================
-         부엉이
-    ====================================================== -->
 
     <div id="owlArea">
 
@@ -1279,28 +647,11 @@ body{
 
     </div>
 
-
-    <!-- =====================================================
-         이모티콘 말풍선
-    ====================================================== -->
-
     <div id="bubble"></div>
-
-
-    <!-- =====================================================
-         효과
-    ====================================================== -->
 
     <div id="effects"></div>
 
-
-    <!-- =====================================================
-         하단 버튼
-         동그라미 인디케이터 제거
-    ====================================================== -->
-
     <div id="buttons">
-
 
         <button
             class="action"
@@ -1308,15 +659,12 @@ body{
             type="button"
             aria-label="먹이"
         >
-
             <img
                 src="button_feed.png"
                 alt=""
                 draggable="false"
             >
-
         </button>
-
 
         <button
             class="action"
@@ -1324,15 +672,12 @@ body{
             type="button"
             aria-label="놀기"
         >
-
             <img
                 src="button_play.png"
                 alt=""
                 draggable="false"
             >
-
         </button>
-
 
         <button
             class="action"
@@ -1340,15 +685,12 @@ body{
             type="button"
             aria-label="쓰다듬기"
         >
-
             <img
                 src="button_pet.png"
                 alt=""
                 draggable="false"
             >
-
         </button>
-
 
         <button
             class="action"
@@ -1356,28 +698,18 @@ body{
             type="button"
             aria-label="말걸기"
         >
-
             <img
                 src="button_talk.png"
                 alt=""
                 draggable="false"
             >
-
         </button>
-
 
     </div>
 
-
-    <!-- =====================================================
-         시작 화면
-    ====================================================== -->
-
     <div id="startScreen">
 
-
         <div id="startCard">
-
 
             <img
                 id="startEgg"
@@ -1386,16 +718,13 @@ body{
                 draggable="false"
             >
 
-
             <div id="startTitle">
                 부엉이 키우기
             </div>
 
-
             <div id="startSub">
                 작은 알에서 부엉이가 태어나요
             </div>
-
 
             <button
                 id="startButton"
@@ -1404,143 +733,73 @@ body{
                 시작
             </button>
 
-
         </div>
-
 
     </div>
 
-
 </div>
-
 
 <script>
 
-/* =========================================================
-   요소
-========================================================= */
-
 const game =
-    document.getElementById(
-        "game"
-    );
-
+    document.getElementById("game");
 
 const background =
-    document.getElementById(
-        "background"
-    );
-
+    document.getElementById("background");
 
 const owlArea =
-    document.getElementById(
-        "owlArea"
-    );
-
+    document.getElementById("owlArea");
 
 const owl =
-    document.getElementById(
-        "owl"
-    );
-
+    document.getElementById("owl");
 
 const nest =
-    document.getElementById(
-        "nest"
-    );
-
+    document.getElementById("nest");
 
 const bubble =
-    document.getElementById(
-        "bubble"
-    );
-
+    document.getElementById("bubble");
 
 const effects =
-    document.getElementById(
-        "effects"
-    );
-
+    document.getElementById("effects");
 
 const startScreen =
-    document.getElementById(
-        "startScreen"
-    );
-
+    document.getElementById("startScreen");
 
 const startButton =
-    document.getElementById(
-        "startButton"
-    );
-
+    document.getElementById("startButton");
 
 const shelf =
-    document.getElementById(
-        "shelf"
-    );
-
+    document.getElementById("shelf");
 
 const booksStanding =
-    document.getElementById(
-        "booksStanding"
-    );
-
+    document.getElementById("booksStanding");
 
 const booksHorizontal =
-    document.getElementById(
-        "booksHorizontal"
-    );
-
+    document.getElementById("booksHorizontal");
 
 const plant =
-    document.getElementById(
-        "plant"
-    );
-
+    document.getElementById("plant");
 
 const lamp =
-    document.getElementById(
-        "lamp"
-    );
-
+    document.getElementById("lamp");
 
 const note =
-    document.getElementById(
-        "note"
-    );
-
-
-/* =========================================================
-   저장
-========================================================= */
+    document.getElementById("note");
 
 const STORAGE_KEY =
     "owl_game_state_v6";
 
-
 const defaultState = {
-
     started:false,
-
     growth:0,
-
     stage:"egg",
-
     hunger:70,
-
     mood:70,
-
     lastUpdate:Date.now()
 };
 
-
 let state =
     loadState();
-
-
-/* =========================================================
-   상태 불러오기
-========================================================= */
 
 function loadState(){
 
@@ -1551,7 +810,6 @@ function loadState(){
                 STORAGE_KEY
             );
 
-
         if(!saved){
 
             return {
@@ -1559,14 +817,9 @@ function loadState(){
             };
         }
 
-
         return {
-
             ...defaultState,
-
-            ...JSON.parse(
-                saved
-            )
+            ...JSON.parse(saved)
         };
 
     }catch(error){
@@ -1577,147 +830,81 @@ function loadState(){
     }
 }
 
-
-/* =========================================================
-   상태 저장
-========================================================= */
-
 function saveState(){
 
     state.lastUpdate =
         Date.now();
 
-
     localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify(
-            state
-        )
+        JSON.stringify(state)
     );
 }
 
-
-/* =========================================================
-   성장 단계
-========================================================= */
-
 function getStage(){
 
-    if(
-        state.growth < 5
-    ){
-
+    if(state.growth < 5){
         return "egg";
     }
 
-
-    if(
-        state.growth < 10
-    ){
-
+    if(state.growth < 10){
         return "egg_cracked";
     }
 
-
-    if(
-        state.growth < 15
-    ){
-
+    if(state.growth < 15){
         return "owl_hatching";
     }
-
 
     return "owl_normal";
 }
 
-
-/* =========================================================
-   성장 이미지
-========================================================= */
-
-function stageImage(
-    stage
-){
+function stageImage(stage){
 
     const images = {
 
-        egg:
-            "egg.png",
-
-        egg_cracked:
-            "egg_cracked.png",
-
-        owl_hatching:
-            "owl_hatching.png",
-
-        owl_normal:
-            "owl_normal.png"
+        egg:"egg.png",
+        egg_cracked:"egg_cracked.png",
+        owl_hatching:"owl_hatching.png",
+        owl_normal:"owl_normal.png"
 
     };
-
 
     return images[stage] ||
         "egg.png";
 }
 
+function setOwlImage(src){
 
-/* =========================================================
-   부엉이 이미지
-========================================================= */
-
-function setOwlImage(
-    src
-){
-
-    owl.src =
-        src;
-
+    owl.src = src;
 
     owl.onerror =
         function(){
 
-            owl.onerror =
-                null;
-
+            owl.onerror = null;
 
             owl.src =
                 "owl_normal.png";
         };
 }
 
-
-/* =========================================================
-   효과음 시스템
-   별도 음원 파일 필요 없음
-========================================================= */
-
-let audioContext =
-    null;
-
+let audioContext = null;
 
 function initAudio(){
 
     try{
 
-        if(
-            !audioContext
-        ){
+        if(!audioContext){
 
             const AudioCtx =
                 window.AudioContext ||
                 window.webkitAudioContext;
 
-
-            if(
-                !AudioCtx
-            )
+            if(!AudioCtx)
                 return;
-
 
             audioContext =
                 new AudioCtx();
         }
-
 
         if(
             audioContext.state ===
@@ -1730,11 +917,6 @@ function initAudio(){
     }catch(error){}
 }
 
-
-/* =========================================================
-   기본 음 생성
-========================================================= */
-
 function tone(
     frequency,
     duration,
@@ -1743,11 +925,8 @@ function tone(
     delay=0
 ){
 
-    if(
-        !audioContext
-    )
+    if(!audioContext)
         return;
-
 
     try{
 
@@ -1755,57 +934,42 @@ function tone(
             audioContext.currentTime +
             delay;
 
-
         const oscillator =
             audioContext.createOscillator();
-
 
         const gain =
             audioContext.createGain();
 
-
         oscillator.type =
             type;
-
 
         oscillator.frequency.setValueAtTime(
             frequency,
             now
         );
 
-
         gain.gain.setValueAtTime(
             0.0001,
             now
         );
-
 
         gain.gain.exponentialRampToValueAtTime(
             volume,
             now + 0.012
         );
 
-
         gain.gain.exponentialRampToValueAtTime(
             0.0001,
             now + duration
         );
 
-
-        oscillator.connect(
-            gain
-        );
-
+        oscillator.connect(gain);
 
         gain.connect(
             audioContext.destination
         );
 
-
-        oscillator.start(
-            now
-        );
-
+        oscillator.start(now);
 
         oscillator.stop(
             now +
@@ -1816,29 +980,14 @@ function tone(
     }catch(error){}
 }
 
-
-/* =========================================================
-   효과음 종류
-========================================================= */
-
-function playSound(
-    name
-){
+function playSound(name){
 
     initAudio();
 
-
-    if(
-        !audioContext
-    )
+    if(!audioContext)
         return;
 
-
-    /* 버튼 */
-
-    if(
-        name === "button"
-    ){
+    if(name === "button"){
 
         tone(
             520,
@@ -1850,12 +999,7 @@ function playSound(
         return;
     }
 
-
-    /* 먹이 */
-
-    if(
-        name === "feed"
-    ){
+    if(name === "feed"){
 
         tone(
             430,
@@ -1863,7 +1007,6 @@ function playSound(
             "sine",
             .04
         );
-
 
         tone(
             620,
@@ -1873,16 +1016,10 @@ function playSound(
             .07
         );
 
-
         return;
     }
 
-
-    /* 놀기 */
-
-    if(
-        name === "play"
-    ){
+    if(name === "play"){
 
         tone(
             520,
@@ -1890,7 +1027,6 @@ function playSound(
             "triangle",
             .035
         );
-
 
         tone(
             760,
@@ -1900,16 +1036,10 @@ function playSound(
             .08
         );
 
-
         return;
     }
 
-
-    /* 쓰다듬기 */
-
-    if(
-        name === "pet"
-    ){
+    if(name === "pet"){
 
         tone(
             360,
@@ -1917,7 +1047,6 @@ function playSound(
             "sine",
             .028
         );
-
 
         tone(
             470,
@@ -1927,16 +1056,10 @@ function playSound(
             .10
         );
 
-
         return;
     }
 
-
-    /* 말걸기 */
-
-    if(
-        name === "talk"
-    ){
+    if(name === "talk"){
 
         tone(
             680,
@@ -1944,7 +1067,6 @@ function playSound(
             "sine",
             .035
         );
-
 
         tone(
             560,
@@ -1954,16 +1076,10 @@ function playSound(
             .08
         );
 
-
         return;
     }
 
-
-    /* 꾹 누르기 */
-
-    if(
-        name === "hold"
-    ){
+    if(name === "hold"){
 
         tone(
             420,
@@ -1971,7 +1087,6 @@ function playSound(
             "sine",
             .035
         );
-
 
         tone(
             620,
@@ -1981,16 +1096,10 @@ function playSound(
             .09
         );
 
-
         return;
     }
 
-
-    /* 소품 */
-
-    if(
-        name === "prop"
-    ){
+    if(name === "prop"){
 
         tone(
             300,
@@ -1999,16 +1108,10 @@ function playSound(
             .025
         );
 
-
         return;
     }
 
-
-    /* 둥지 */
-
-    if(
-        name === "nest"
-    ){
+    if(name === "nest"){
 
         tone(
             280,
@@ -2016,7 +1119,6 @@ function playSound(
             "sine",
             .025
         );
-
 
         tone(
             350,
@@ -2026,16 +1128,10 @@ function playSound(
             .07
         );
 
-
         return;
     }
 
-
-    /* 부화 */
-
-    if(
-        name === "hatch"
-    ){
+    if(name === "hatch"){
 
         tone(
             350,
@@ -2043,7 +1139,6 @@ function playSound(
             "triangle",
             .035
         );
-
 
         tone(
             520,
@@ -2053,7 +1148,6 @@ function playSound(
             .09
         );
 
-
         tone(
             760,
             .18,
@@ -2062,16 +1156,10 @@ function playSound(
             .19
         );
 
-
         return;
     }
 
-
-    /* 행복 */
-
-    if(
-        name === "happy"
-    ){
+    if(name === "happy"){
 
         tone(
             520,
@@ -2079,7 +1167,6 @@ function playSound(
             "sine",
             .035
         );
-
 
         tone(
             690,
@@ -2089,16 +1176,10 @@ function playSound(
             .07
         );
 
-
         return;
     }
 
-
-    /* 놀람 */
-
-    if(
-        name === "surprise"
-    ){
+    if(name === "surprise"){
 
         tone(
             850,
@@ -2109,11 +1190,6 @@ function playSound(
     }
 }
 
-
-/* =========================================================
-   이모티콘
-========================================================= */
-
 const EMOTES = {
 
     normal:[
@@ -2122,13 +1198,11 @@ const EMOTES = {
         "*⸌☻ັ⸍*"
     ],
 
-
     happy:[
         "•ᴗ•♥",
         "ᵔᵕᵔ",
         "*⸌◡⸍*"
     ],
-
 
     love:[
         "-`♥´-",
@@ -2136,13 +1210,11 @@ const EMOTES = {
         "•ᴗ•♡"
     ],
 
-
     curious:[
         "•ᴗ•?",
         "ᵔᴥᵔ?",
         "•̀ᴗ•́?"
     ],
-
 
     sleepy:[
         "ᵕᴗᵕ",
@@ -2150,20 +1222,17 @@ const EMOTES = {
         "ᵕ﹏ᵕ"
     ],
 
-
     surprised:[
         "⊙ᴗ⊙",
         "•0•",
         "ㅇㅁㅇ"
     ],
 
-
     shy:[
         "⁄⁄•⁄ω⁄•⁄⁄",
         "〃ᴗ〃",
         "•///•"
     ],
-
 
     back:[
         "ᵔᴥᵔ",
@@ -2172,14 +1241,7 @@ const EMOTES = {
     ]
 };
 
-
-/* =========================================================
-   랜덤
-========================================================= */
-
-function randomItem(
-    array
-){
+function randomItem(array){
 
     return array[
         Math.floor(
@@ -2189,32 +1251,20 @@ function randomItem(
     ];
 }
 
+let bubbleTimer = null;
 
-/* =========================================================
-   이모티콘 말풍선
-========================================================= */
-
-let bubbleTimer =
-    null;
-
-
-function showBubble(
-    text
-){
+function showBubble(text){
 
     clearTimeout(
         bubbleTimer
     );
 
-
     bubble.textContent =
         text;
-
 
     bubble.classList.add(
         "show"
     );
-
 
     bubbleTimer =
         setTimeout(
@@ -2229,14 +1279,7 @@ function showBubble(
         );
 }
 
-
-/* =========================================================
-   랜덤 이모티콘
-========================================================= */
-
-function showRandomEmote(
-    type
-){
+function showRandomEmote(type){
 
     showBubble(
         randomItem(
@@ -2245,11 +1288,6 @@ function showRandomEmote(
         )
     );
 }
-
-
-/* =========================================================
-   애니메이션 재생
-========================================================= */
 
 function replayClass(
     element,
@@ -2260,14 +1298,11 @@ function replayClass(
         className
     );
 
-
     void element.offsetWidth;
-
 
     element.classList.add(
         className
     );
-
 
     setTimeout(
         function(){
@@ -2281,11 +1316,6 @@ function replayClass(
     );
 }
 
-
-/* =========================================================
-   효과 이미지
-========================================================= */
-
 function createEffect(
     image,
     x,
@@ -2297,26 +1327,20 @@ function createEffect(
             "img"
         );
 
-
     img.className =
         "effect";
-
 
     img.src =
         image;
 
-
     img.draggable =
         false;
-
 
     img.style.left =
         x + "%";
 
-
     img.style.top =
         y + "%";
-
 
     img.onerror =
         function(){
@@ -2324,11 +1348,9 @@ function createEffect(
             img.remove();
         };
 
-
     effects.appendChild(
         img
     );
-
 
     setTimeout(
         function(){
@@ -2340,11 +1362,6 @@ function createEffect(
     );
 }
 
-
-/* =========================================================
-   시작
-========================================================= */
-
 startButton.addEventListener(
     "pointerdown",
     function(event){
@@ -2352,29 +1369,22 @@ startButton.addEventListener(
         event.preventDefault();
         event.stopPropagation();
 
-
         initAudio();
-
 
         playSound(
             "button"
         );
 
-
         state.started =
             true;
 
-
         saveState();
-
 
         startScreen.classList.add(
             "hidden"
         );
 
-
         updateGame();
-
 
         showBubble(
             "*⸌☻ັ⸍*"
@@ -2386,14 +1396,7 @@ startButton.addEventListener(
     }
 );
 
-
-/* =========================================================
-   시작 상태
-========================================================= */
-
-if(
-    state.started
-){
+if(state.started){
 
     startScreen.classList.add(
         "hidden"
@@ -2406,16 +1409,10 @@ if(
     );
 }
 
-
-/* =========================================================
-   게임 갱신
-========================================================= */
-
 function updateGame(){
 
     state.stage =
         getStage();
-
 
     setOwlImage(
         stageImage(
@@ -2424,18 +1421,10 @@ function updateGame(){
     );
 }
 
-
 updateGame();
 
-
-/* =========================================================
-   먹이
-========================================================= */
-
 document
-    .getElementById(
-        "feedButton"
-    )
+    .getElementById("feedButton")
     .addEventListener(
         "pointerdown",
         function(event){
@@ -2443,20 +1432,12 @@ document
             event.preventDefault();
             event.stopPropagation();
 
-
             initAudio();
 
+            playSound("feed");
 
-            playSound(
-                "feed"
-            );
-
-
-            if(
-                !state.started
-            )
+            if(!state.started)
                 return;
-
 
             if(
                 state.stage !==
@@ -2468,25 +1449,19 @@ document
                 return;
             }
 
-
             state.hunger =
                 Math.min(
                     100,
-                    state.hunger +
-                    18
+                    state.hunger + 18
                 );
-
 
             state.mood =
                 Math.min(
                     100,
-                    state.mood +
-                    5
+                    state.mood + 5
                 );
 
-
             saveState();
-
 
             showBubble(
                 randomItem([
@@ -2496,12 +1471,10 @@ document
                 ])
             );
 
-
             replayClass(
                 owl,
                 "owl-jump"
             );
-
 
             createEffect(
                 "effect_food.png",
@@ -2515,15 +1488,8 @@ document
         }
     );
 
-
-/* =========================================================
-   놀기
-========================================================= */
-
 document
-    .getElementById(
-        "playButton"
-    )
+    .getElementById("playButton")
     .addEventListener(
         "pointerdown",
         function(event){
@@ -2531,20 +1497,12 @@ document
             event.preventDefault();
             event.stopPropagation();
 
-
             initAudio();
 
+            playSound("play");
 
-            playSound(
-                "play"
-            );
-
-
-            if(
-                !state.started
-            )
+            if(!state.started)
                 return;
-
 
             if(
                 state.stage !==
@@ -2556,36 +1514,28 @@ document
                 return;
             }
 
-
             state.mood =
                 Math.min(
                     100,
-                    state.mood +
-                    20
+                    state.mood + 20
                 );
-
 
             state.hunger =
                 Math.max(
                     0,
-                    state.hunger -
-                    5
+                    state.hunger - 5
                 );
 
-
             saveState();
-
 
             showRandomEmote(
                 "happy"
             );
 
-
             replayClass(
                 owl,
                 "owl-wiggle"
             );
-
 
             createEffect(
                 "effect_star.png",
@@ -2599,15 +1549,8 @@ document
         }
     );
 
-
-/* =========================================================
-   쓰다듬기
-========================================================= */
-
 document
-    .getElementById(
-        "petButton"
-    )
+    .getElementById("petButton")
     .addEventListener(
         "pointerdown",
         function(event){
@@ -2615,20 +1558,12 @@ document
             event.preventDefault();
             event.stopPropagation();
 
-
             initAudio();
 
+            playSound("pet");
 
-            playSound(
-                "pet"
-            );
-
-
-            if(
-                !state.started
-            )
+            if(!state.started)
                 return;
-
 
             if(
                 state.stage !==
@@ -2640,28 +1575,22 @@ document
                 return;
             }
 
-
             state.mood =
                 Math.min(
                     100,
-                    state.mood +
-                    12
+                    state.mood + 12
                 );
 
-
             saveState();
-
 
             showRandomEmote(
                 "love"
             );
 
-
             replayClass(
                 owl,
                 "owl-jump"
             );
-
 
             createEffect(
                 "effect_heart.png",
@@ -2675,15 +1604,8 @@ document
         }
     );
 
-
-/* =========================================================
-   말걸기
-========================================================= */
-
 document
-    .getElementById(
-        "talkButton"
-    )
+    .getElementById("talkButton")
     .addEventListener(
         "pointerdown",
         function(event){
@@ -2691,53 +1613,34 @@ document
             event.preventDefault();
             event.stopPropagation();
 
-
             initAudio();
 
+            playSound("talk");
 
-            playSound(
-                "talk"
-            );
-
-
-            if(
-                !state.started
-            )
+            if(!state.started)
                 return;
 
-
             const reactions = [
-
                 "normal",
                 "happy",
                 "curious",
                 "sleepy",
                 "shy",
                 "surprised"
-
             ];
-
 
             const type =
                 randomItem(
                     reactions
                 );
 
-
             showRandomEmote(
                 type
             );
 
+            if(type === "happy"){
 
-            if(
-                type ===
-                "happy"
-            ){
-
-                playSound(
-                    "happy"
-                );
-
+                playSound("happy");
 
                 replayClass(
                     owl,
@@ -2745,16 +1648,9 @@ document
                 );
             }
 
+            if(type === "surprised"){
 
-            if(
-                type ===
-                "surprised"
-            ){
-
-                playSound(
-                    "surprise"
-                );
-
+                playSound("surprise");
 
                 replayClass(
                     owl,
@@ -2768,11 +1664,6 @@ document
         }
     );
 
-
-/* =========================================================
-   알 터치 / 성장
-========================================================= */
-
 function hatchTap(){
 
     if(
@@ -2784,38 +1675,28 @@ function hatchTap(){
             "happy"
         );
 
-
         playSound(
             "happy"
         );
 
-
         return;
     }
 
-
-    state.growth +=
-        1;
-
+    state.growth += 1;
 
     if(
         state.growth > 15
     ){
 
-        state.growth =
-            15;
+        state.growth = 15;
     }
-
 
     state.stage =
         getStage();
 
-
     saveState();
 
-
     updateGame();
-
 
     if(
         state.stage ===
@@ -2830,14 +1711,11 @@ function hatchTap(){
             ])
         );
 
-
         playSound(
             "button"
         );
-    }
 
-
-    else if(
+    }else if(
         state.stage ===
         "egg_cracked"
     ){
@@ -2850,20 +1728,16 @@ function hatchTap(){
             ])
         );
 
-
         replayClass(
             owl,
             "owl-wiggle"
         );
 
-
         playSound(
             "hatch"
         );
-    }
 
-
-    else if(
+    }else if(
         state.stage ===
         "owl_hatching"
     ){
@@ -2872,20 +1746,16 @@ function hatchTap(){
             "*⸌☻ັ⸍*"
         );
 
-
         replayClass(
             owl,
             "owl-jump"
         );
 
-
         playSound(
             "hatch"
         );
-    }
 
-
-    else if(
+    }else if(
         state.stage ===
         "owl_normal"
     ){
@@ -2896,12 +1766,10 @@ function hatchTap(){
             )
         );
 
-
         replayClass(
             owl,
             "owl-jump"
         );
-
 
         createEffect(
             "effect_heart.png",
@@ -2909,25 +1777,16 @@ function hatchTap(){
             35
         );
 
-
         playSound(
             "happy"
         );
     }
 }
 
-
-/* =========================================================
-   부엉이 짧게 터치
-========================================================= */
-
 function owlShortTap(){
 
-    if(
-        !state.started
-    )
+    if(!state.started)
         return;
-
 
     if(
         state.stage !==
@@ -2939,31 +1798,22 @@ function owlShortTap(){
         return;
     }
 
-
     const random =
         Math.random();
 
-
-    /* 갸웃 */
-
-    if(
-        random < .20
-    ){
+    if(random < .20){
 
         setOwlImage(
             "owl_head_tilt.png"
         );
 
-
         showRandomEmote(
             "curious"
         );
 
-
         playSound(
             "talk"
         );
-
 
         setTimeout(
             function(){
@@ -2976,32 +1826,23 @@ function owlShortTap(){
             1200
         );
 
-
         return;
     }
 
-
-    /* 엿보기 */
-
-    if(
-        random < .34
-    ){
+    if(random < .34){
 
         setOwlImage(
             "owl_peek.png"
         );
 
-
         showRandomEmote(
             "curious"
         );
-
 
         playSound(
             "talk"
         );
 
-
         setTimeout(
             function(){
 
@@ -3013,31 +1854,22 @@ function owlShortTap(){
             1100
         );
 
-
         return;
     }
 
-
-    /* 부끄러움 */
-
-    if(
-        random < .44
-    ){
+    if(random < .44){
 
         setOwlImage(
             "owl_shy.png"
         );
 
-
         showRandomEmote(
             "shy"
         );
 
-
         playSound(
             "pet"
         );
-
 
         setTimeout(
             function(){
@@ -3050,31 +1882,22 @@ function owlShortTap(){
             1100
         );
 
-
         return;
     }
 
-
-    /* 놀람 */
-
-    if(
-        random < .54
-    ){
+    if(random < .54){
 
         setOwlImage(
             "owl_surprised.png"
         );
 
-
         showRandomEmote(
             "surprised"
         );
 
-
         playSound(
             "surprise"
         );
-
 
         setTimeout(
             function(){
@@ -3087,20 +1910,16 @@ function owlShortTap(){
             900
         );
 
-
         return;
     }
-
 
     showRandomEmote(
         "normal"
     );
 
-
     playSound(
         "button"
     );
-
 
     replayClass(
         owl,
@@ -3108,34 +1927,11 @@ function owlShortTap(){
     );
 }
 
-
-/* =========================================================
-   꾹 누르기
-========================================================= */
-
-let pressTimer =
-    null;
-
-
-let pressStartX =
-    0;
-
-
-let pressStartY =
-    0;
-
-
-let isLongPress =
-    false;
-
-
-let pointerDown =
-    false;
-
-
-/* =========================================================
-   꾹 누르기 시작
-========================================================= */
+let pressTimer = null;
+let pressStartX = 0;
+let pressStartY = 0;
+let isLongPress = false;
+let pointerDown = false;
 
 owlArea.addEventListener(
     "pointerdown",
@@ -3144,36 +1940,23 @@ owlArea.addEventListener(
         event.preventDefault();
         event.stopPropagation();
 
-
         initAudio();
 
-
-        if(
-            !state.started
-        )
+        if(!state.started)
             return;
 
-
-        pointerDown =
-            true;
-
-
-        isLongPress =
-            false;
-
+        pointerDown = true;
+        isLongPress = false;
 
         pressStartX =
             event.clientX;
 
-
         pressStartY =
             event.clientY;
-
 
         clearTimeout(
             pressTimer
         );
-
 
         try{
 
@@ -3183,37 +1966,28 @@ owlArea.addEventListener(
 
         }catch(error){}
 
-
         pressTimer =
             setTimeout(
                 function(){
 
-                    if(
-                        !pointerDown
-                    )
+                    if(!pointerDown)
                         return;
 
-
-                    isLongPress =
-                        true;
-
+                    isLongPress = true;
 
                     owlArea.classList.add(
                         "long-press"
                     );
 
-
                     showRandomEmote(
                         "happy"
                     );
-
 
                     createEffect(
                         "effect_heart.png",
                         51,
                         31
                     );
-
 
                     playSound(
                         "hold"
@@ -3229,40 +2003,28 @@ owlArea.addEventListener(
     }
 );
 
-
-/* =========================================================
-   움직임
-========================================================= */
-
 owlArea.addEventListener(
     "pointermove",
     function(event){
 
-        if(
-            !pointerDown
-        )
+        if(!pointerDown)
             return;
 
-
         event.preventDefault();
-
 
         const dx =
             event.clientX -
             pressStartX;
 
-
         const dy =
             event.clientY -
             pressStartY;
-
 
         const distance =
             Math.sqrt(
                 dx * dx +
                 dy * dy
             );
-
 
         if(
             distance > 12 &&
@@ -3280,73 +2042,47 @@ owlArea.addEventListener(
     }
 );
 
-
-/* =========================================================
-   꾹 누르기 종료
-========================================================= */
-
-function finishOwlPress(
-    event
-){
+function finishOwlPress(event){
 
     event.preventDefault();
     event.stopPropagation();
-
 
     clearTimeout(
         pressTimer
     );
 
-
-    if(
-        !pointerDown
-    )
+    if(!pointerDown)
         return;
 
-
-    pointerDown =
-        false;
-
+    pointerDown = false;
 
     owlArea.classList.remove(
         "long-press"
     );
 
+    if(isLongPress){
 
-    if(
-        isLongPress
-    ){
-
-        isLongPress =
-            false;
-
+        isLongPress = false;
 
         setOwlImage(
             "owl_normal.png"
         );
 
-
         showRandomEmote(
             "love"
         );
-
 
         playSound(
             "pet"
         );
 
-
         return;
     }
 
-
-    isLongPress =
-        false;
-
+    isLongPress = false;
 
     owlShortTap();
 }
-
 
 owlArea.addEventListener(
     "pointerup",
@@ -3356,7 +2092,6 @@ owlArea.addEventListener(
     }
 );
 
-
 owlArea.addEventListener(
     "pointercancel",
     finishOwlPress,
@@ -3365,11 +2100,6 @@ owlArea.addEventListener(
     }
 );
 
-
-/* =========================================================
-   둥지
-========================================================= */
-
 nest.addEventListener(
     "pointerdown",
     function(event){
@@ -3377,21 +2107,15 @@ nest.addEventListener(
         event.preventDefault();
         event.stopPropagation();
 
-
         initAudio();
 
-
-        if(
-            !state.started
-        )
+        if(!state.started)
             return;
-
 
         replayClass(
             nest,
             "nest-shake"
         );
-
 
         showBubble(
             randomItem([
@@ -3400,7 +2124,6 @@ nest.addEventListener(
                 "ᵕᴗᵕ"
             ])
         );
-
 
         playSound(
             "nest"
@@ -3411,11 +2134,6 @@ nest.addEventListener(
         passive:false
     }
 );
-
-
-/* =========================================================
-   소품 상호작용
-========================================================= */
 
 function setupProp(
     element,
@@ -3430,26 +2148,19 @@ function setupProp(
             event.preventDefault();
             event.stopPropagation();
 
-
             initAudio();
 
-
-            if(
-                !state.started
-            )
+            if(!state.started)
                 return;
-
 
             replayClass(
                 element,
                 "shake"
             );
 
-
             showRandomEmote(
                 emoteType
             );
-
 
             playSound(
                 sound
@@ -3462,30 +2173,25 @@ function setupProp(
     );
 }
 
-
 setupProp(
     shelf,
     "curious"
 );
-
 
 setupProp(
     booksStanding,
     "normal"
 );
 
-
 setupProp(
     booksHorizontal,
     "curious"
 );
 
-
 setupProp(
     plant,
     "normal"
 );
-
 
 setupProp(
     lamp,
@@ -3493,26 +2199,17 @@ setupProp(
     "prop"
 );
 
-
 setupProp(
     note,
     "curious"
 );
 
-
-/* =========================================================
-   iOS 기본 동작 방지
-========================================================= */
-
-function preventNative(
-    event
-){
+function preventNative(event){
 
     event.preventDefault();
 
     return false;
 }
-
 
 document.addEventListener(
     "contextmenu",
@@ -3522,7 +2219,6 @@ document.addEventListener(
     }
 );
 
-
 document.addEventListener(
     "selectstart",
     preventNative,
@@ -3530,7 +2226,6 @@ document.addEventListener(
         passive:false
     }
 );
-
 
 document.addEventListener(
     "dragstart",
@@ -3540,11 +2235,6 @@ document.addEventListener(
     }
 );
 
-
-/* =========================================================
-   iOS 확대 제스처 방지
-========================================================= */
-
 document.addEventListener(
     "gesturestart",
     preventNative,
@@ -3552,7 +2242,6 @@ document.addEventListener(
         passive:false
     }
 );
-
 
 document.addEventListener(
     "gesturechange",
@@ -3562,7 +2251,6 @@ document.addEventListener(
     }
 );
 
-
 document.addEventListener(
     "gestureend",
     preventNative,
@@ -3570,11 +2258,6 @@ document.addEventListener(
         passive:false
     }
 );
-
-
-/* =========================================================
-   멀티터치 확대 방지
-========================================================= */
 
 document.addEventListener(
     "touchstart",
@@ -3594,7 +2277,6 @@ document.addEventListener(
     }
 );
 
-
 document.addEventListener(
     "touchmove",
     function(event){
@@ -3613,14 +2295,7 @@ document.addEventListener(
     }
 );
 
-
-/* =========================================================
-   빠른 두 번 터치 확대 방지
-========================================================= */
-
-let lastTouchTime =
-    0;
-
+let lastTouchTime = 0;
 
 document.addEventListener(
     "touchend",
@@ -3628,7 +2303,6 @@ document.addEventListener(
 
         const now =
             Date.now();
-
 
         if(
             now -
@@ -3639,7 +2313,6 @@ document.addEventListener(
             event.preventDefault();
         }
 
-
         lastTouchTime =
             now;
 
@@ -3649,15 +2322,8 @@ document.addEventListener(
     }
 );
 
-
-/* =========================================================
-   이미지 기본 동작 차단
-========================================================= */
-
 document
-    .querySelectorAll(
-        "img"
-    )
+    .querySelectorAll("img")
     .forEach(
         function(img){
 
@@ -3666,7 +2332,6 @@ document
                 "false"
             );
 
-
             img.addEventListener(
                 "dragstart",
                 preventNative,
@@ -3674,7 +2339,6 @@ document
                     passive:false
                 }
             );
-
 
             img.addEventListener(
                 "contextmenu",
@@ -3685,11 +2349,6 @@ document
             );
         }
     );
-
-
-/* =========================================================
-   게임 영역 기본 동작 차단
-========================================================= */
 
 [
     game,
@@ -3712,7 +2371,6 @@ document
             }
         );
 
-
         element.addEventListener(
             "selectstart",
             preventNative,
@@ -3720,7 +2378,6 @@ document
                 passive:false
             }
         );
-
 
         element.addEventListener(
             "dragstart",
@@ -3732,25 +2389,16 @@ document
     }
 );
 
-
-/* =========================================================
-   낮 / 밤
-========================================================= */
-
 function updateDayNight(){
 
     const hour =
         new Date().getHours();
 
-
     const night =
         hour >= 19 ||
         hour < 6;
 
-
-    if(
-        night
-    ){
+    if(night){
 
         if(
             !background.src.endsWith(
@@ -3761,13 +2409,11 @@ function updateDayNight(){
             background.style.opacity =
                 "0";
 
-
             setTimeout(
                 function(){
 
                     background.src =
                         "bg_night.png";
-
 
                     background.style.opacity =
                         "1";
@@ -3776,7 +2422,6 @@ function updateDayNight(){
                 180
             );
         }
-
 
         game.classList.add(
             "night"
@@ -3793,13 +2438,11 @@ function updateDayNight(){
             background.style.opacity =
                 "0";
 
-
             setTimeout(
                 function(){
 
                     background.src =
                         "bg_day.png";
-
 
                     background.style.opacity =
                         "1";
@@ -3809,57 +2452,39 @@ function updateDayNight(){
             );
         }
 
-
         game.classList.remove(
             "night"
         );
     }
 }
 
-
 updateDayNight();
-
 
 setInterval(
     updateDayNight,
     60000
 );
 
-
-/* =========================================================
-   상태 감소
-========================================================= */
-
 function updateStats(){
 
-    if(
-        !state.started
-    )
+    if(!state.started)
         return;
-
 
     const now =
         Date.now();
-
 
     const elapsed =
         now -
         state.lastUpdate;
 
-
-    if(
-        elapsed <
-        60000
-    )
+    if(elapsed < 60000)
         return;
-
 
     const minutes =
         Math.floor(
             elapsed /
             60000
         );
-
 
     if(
         state.stage ===
@@ -3873,41 +2498,28 @@ function updateStats(){
                 minutes
             );
 
-
         state.mood =
             Math.max(
                 0,
                 state.mood -
                 Math.floor(
-                    minutes /
-                    2
+                    minutes / 2
                 )
             );
     }
 
-
     saveState();
 }
-
 
 setInterval(
     updateStats,
     60000
 );
 
-
-/* =========================================================
-   자동 행동
-   터치하지 않아도 움직임
-========================================================= */
-
 function idleBehavior(){
 
-    if(
-        !state.started
-    )
+    if(!state.started)
         return;
-
 
     if(
         state.stage !==
@@ -3915,26 +2527,18 @@ function idleBehavior(){
     )
         return;
 
-
     const random =
         Math.random();
 
-
-    /* 갸웃 */
-
-    if(
-        random < .22
-    ){
+    if(random < .22){
 
         setOwlImage(
             "owl_head_tilt.png"
         );
 
-
         showRandomEmote(
             "curious"
         );
-
 
         setTimeout(
             function(){
@@ -3947,26 +2551,18 @@ function idleBehavior(){
             1300
         );
 
-
         return;
     }
 
-
-    /* 엿보기 */
-
-    if(
-        random < .38
-    ){
+    if(random < .38){
 
         setOwlImage(
             "owl_peek.png"
         );
 
-
         showRandomEmote(
             "curious"
         );
-
 
         setTimeout(
             function(){
@@ -3979,26 +2575,18 @@ function idleBehavior(){
             1200
         );
 
-
         return;
     }
 
-
-    /* 뒤돌기 */
-
-    if(
-        random < .50
-    ){
+    if(random < .50){
 
         setOwlImage(
             "owl_back.png"
         );
 
-
         showRandomEmote(
             "back"
         );
-
 
         setTimeout(
             function(){
@@ -4011,26 +2599,18 @@ function idleBehavior(){
             1400
         );
 
-
         return;
     }
 
-
-    /* 졸기 */
-
-    if(
-        random < .62
-    ){
+    if(random < .62){
 
         setOwlImage(
             "owl_sleep.png"
         );
 
-
         showRandomEmote(
             "sleepy"
         );
-
 
         setTimeout(
             function(){
@@ -4045,24 +2625,16 @@ function idleBehavior(){
     }
 }
 
-
 setInterval(
     idleBehavior,
     12000
 );
 
-
-/* =========================================================
-   다시 앱으로 돌아왔을 때
-========================================================= */
-
 document.addEventListener(
     "visibilitychange",
     function(){
 
-        if(
-            !document.hidden
-        ){
+        if(!document.hidden){
 
             updateStats();
 
@@ -4072,11 +2644,6 @@ document.addEventListener(
         }
     }
 );
-
-
-/* =========================================================
-   종료 전 저장
-========================================================= */
 
 window.addEventListener(
     "beforeunload",
