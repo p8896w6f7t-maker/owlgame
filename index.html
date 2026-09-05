@@ -124,26 +124,26 @@ body{
 
 /* =========================================================
    선반
-   아래로 이동해서 책과 맞춤
+   책 바로 아래에 오도록 위치 변경
 ========================================================= */
 
 #shelf{
     width:39%;
     left:2%;
-    top:21%;
+    top:24%;
     z-index:6;
 }
 
 
 /* =========================================================
    선반 위 책
-   책 밑부분이 선반 윗부분에 닿도록 위치 조정
+   선반보다 위에 오도록 위치 변경
 ========================================================= */
 
 #booksStanding{
     width:19%;
     left:9%;
-    top:18.8%;
+    top:19.5%;
     z-index:7;
     transform-origin:50% 100%;
 }
@@ -242,12 +242,33 @@ body{
         opacity .15s ease;
 }
 
+
+/* =========================================================
+   꾹 누르기
+========================================================= */
+
 #owlArea.long-press #owl{
     transform:
         translateY(-26px)
         scale(1.04);
     transition:transform .18s ease;
 }
+
+
+/* =========================================================
+   잠자는 상태
+========================================================= */
+
+#owlArea.sleeping #owl{
+    transform:
+        translateY(4px)
+        scale(.98);
+}
+
+
+/* =========================================================
+   점프
+========================================================= */
 
 .owl-jump{
     animation:owlJump .34s ease-out;
@@ -265,6 +286,11 @@ body{
     }
 }
 
+
+/* =========================================================
+   흔들기
+========================================================= */
+
 .owl-wiggle{
     animation:owlWiggle .42s ease-in-out;
 }
@@ -277,6 +303,11 @@ body{
     80%{transform:rotate(2deg);}
     100%{transform:rotate(0);}
 }
+
+
+/* =========================================================
+   선반 / 소품 흔들기
+========================================================= */
 
 .shake{
     animation:propShake .45s ease-in-out;
@@ -338,6 +369,11 @@ body{
     }
 }
 
+
+/* =========================================================
+   말풍선
+========================================================= */
+
 #bubble{
     position:absolute;
     left:50%;
@@ -392,6 +428,11 @@ body{
         rotate(45deg);
 }
 
+
+/* =========================================================
+   효과
+========================================================= */
+
 #effects{
     position:absolute;
     inset:0;
@@ -429,6 +470,11 @@ body{
             translateY(-35px);
     }
 }
+
+
+/* =========================================================
+   버튼
+========================================================= */
 
 #buttons{
     position:absolute;
@@ -478,6 +524,11 @@ body{
 .action:active img{
     transform:scale(.92);
 }
+
+
+/* =========================================================
+   시작 화면
+========================================================= */
 
 #startScreen{
     position:absolute;
@@ -549,6 +600,11 @@ body{
         #8b6247;
 }
 
+
+/* =========================================================
+   모바일
+========================================================= */
+
 @media(max-width:430px){
 
     #game{
@@ -558,6 +614,7 @@ body{
         max-height:none;
         border-radius:0;
     }
+
 }
 
 </style>
@@ -629,12 +686,14 @@ body{
 
     </div>
 
+
     <img
         id="nest"
         src="nest.png"
         alt=""
         draggable="false"
     >
+
 
     <div id="owlArea">
 
@@ -647,9 +706,11 @@ body{
 
     </div>
 
+
     <div id="bubble"></div>
 
     <div id="effects"></div>
+
 
     <div id="buttons">
 
@@ -707,6 +768,7 @@ body{
 
     </div>
 
+
     <div id="startScreen">
 
         <div id="startCard">
@@ -738,6 +800,7 @@ body{
     </div>
 
 </div>
+
 
 <script>
 
@@ -786,20 +849,35 @@ const lamp =
 const note =
     document.getElementById("note");
 
+
 const STORAGE_KEY =
     "owl_game_state_v6";
 
+
 const defaultState = {
+
     started:false,
+
     growth:0,
+
     stage:"egg",
+
     hunger:70,
+
     mood:70,
+
     lastUpdate:Date.now()
+
 };
+
 
 let state =
     loadState();
+
+
+/* =========================================================
+   상태 불러오기
+========================================================= */
 
 function loadState(){
 
@@ -815,11 +893,15 @@ function loadState(){
             return {
                 ...defaultState
             };
+
         }
 
         return {
+
             ...defaultState,
+
             ...JSON.parse(saved)
+
         };
 
     }catch(error){
@@ -827,8 +909,11 @@ function loadState(){
         return {
             ...defaultState
         };
+
     }
+
 }
+
 
 function saveState(){
 
@@ -839,7 +924,13 @@ function saveState(){
         STORAGE_KEY,
         JSON.stringify(state)
     );
+
 }
+
+
+/* =========================================================
+   성장 단계
+========================================================= */
 
 function getStage(){
 
@@ -856,22 +947,29 @@ function getStage(){
     }
 
     return "owl_normal";
+
 }
+
 
 function stageImage(stage){
 
     const images = {
 
         egg:"egg.png",
+
         egg_cracked:"egg_cracked.png",
+
         owl_hatching:"owl_hatching.png",
+
         owl_normal:"owl_normal.png"
 
     };
 
     return images[stage] ||
         "egg.png";
+
 }
+
 
 function setOwlImage(src){
 
@@ -884,10 +982,230 @@ function setOwlImage(src){
 
             owl.src =
                 "owl_normal.png";
+
         };
+
 }
 
+
+/* =========================================================
+   부엉이 잠 관련
+========================================================= */
+
+/*
+    마지막으로 부엉이를 누른 시간
+
+    밤:
+    19:00 ~ 05:59
+    30초 동안 안 누르면 잠듦
+
+    낮:
+    06:00 ~ 18:59
+    15초 동안 안 누르면 잠듦
+*/
+
+let owlLastTouchTime =
+    Date.now();
+
+let owlSleeping =
+    false;
+
+
+/* =========================================================
+   현재 밤인지 확인
+========================================================= */
+
+function isNightTime(){
+
+    const hour =
+        new Date().getHours();
+
+    return (
+        hour >= 19 ||
+        hour < 6
+    );
+
+}
+
+
+/* =========================================================
+   잠드는 데 필요한 시간
+========================================================= */
+
+function getSleepDelay(){
+
+    if(isNightTime()){
+
+        return 30 * 1000;
+
+    }
+
+    return 15 * 1000;
+
+}
+
+
+/* =========================================================
+   부엉이를 깨움
+========================================================= */
+
+function wakeOwl(){
+
+    owlLastTouchTime =
+        Date.now();
+
+    if(!owlSleeping)
+        return;
+
+    owlSleeping =
+        false;
+
+    owlArea.classList.remove(
+        "sleeping"
+    );
+
+    setOwlImage(
+        "owl_normal.png"
+    );
+
+    showBubble(
+        randomItem([
+            "ᵕᴗᵕ",
+            "•ᴗ•",
+            "ᵔᴥᵔ"
+        ])
+    );
+
+    playSound(
+        "happy"
+    );
+
+}
+
+
+/* =========================================================
+   부엉이를 잠재움
+========================================================= */
+
+function sleepOwl(){
+
+    if(!state.started)
+        return;
+
+    if(
+        state.stage !==
+        "owl_normal"
+    )
+        return;
+
+    if(owlSleeping)
+        return;
+
+    owlSleeping =
+        true;
+
+    owlArea.classList.remove(
+        "long-press"
+    );
+
+    owlArea.classList.add(
+        "sleeping"
+    );
+
+    setOwlImage(
+        "owl_sleep.png"
+    );
+
+    showBubble(
+        randomItem(
+            EMOTES.sleepy
+        )
+    );
+
+}
+
+
+/* =========================================================
+   잠 상태 확인
+========================================================= */
+
+function checkOwlSleep(){
+
+    if(!state.started)
+        return;
+
+    if(
+        state.stage !==
+        "owl_normal"
+    )
+        return;
+
+    if(owlSleeping)
+        return;
+
+    const elapsed =
+        Date.now() -
+        owlLastTouchTime;
+
+    const delay =
+        getSleepDelay();
+
+    if(elapsed >= delay){
+
+        sleepOwl();
+
+    }
+
+}
+
+
+/* =========================================================
+   시간대가 바뀌었을 때 잠 타이머 다시 계산
+========================================================= */
+
+let previousNightState =
+    isNightTime();
+
+
+function updateSleepTimeState(){
+
+    const currentNightState =
+        isNightTime();
+
+    if(
+        currentNightState !==
+        previousNightState
+    ){
+
+        previousNightState =
+            currentNightState;
+
+        owlLastTouchTime =
+            Date.now();
+
+    }
+
+}
+
+
+setInterval(
+    function(){
+
+        updateSleepTimeState();
+
+        checkOwlSleep();
+
+    },
+    1000
+);
+
+
+/* =========================================================
+   오디오
+========================================================= */
+
 let audioContext = null;
+
 
 function initAudio(){
 
@@ -904,6 +1222,7 @@ function initAudio(){
 
             audioContext =
                 new AudioCtx();
+
         }
 
         if(
@@ -912,10 +1231,13 @@ function initAudio(){
         ){
 
             audioContext.resume();
+
         }
 
     }catch(error){}
+
 }
+
 
 function tone(
     frequency,
@@ -978,7 +1300,9 @@ function tone(
         );
 
     }catch(error){}
+
 }
+
 
 function playSound(name){
 
@@ -986,6 +1310,7 @@ function playSound(name){
 
     if(!audioContext)
         return;
+
 
     if(name === "button"){
 
@@ -997,7 +1322,9 @@ function playSound(name){
         );
 
         return;
+
     }
+
 
     if(name === "feed"){
 
@@ -1017,7 +1344,9 @@ function playSound(name){
         );
 
         return;
+
     }
+
 
     if(name === "play"){
 
@@ -1037,7 +1366,9 @@ function playSound(name){
         );
 
         return;
+
     }
+
 
     if(name === "pet"){
 
@@ -1057,7 +1388,9 @@ function playSound(name){
         );
 
         return;
+
     }
+
 
     if(name === "talk"){
 
@@ -1077,7 +1410,9 @@ function playSound(name){
         );
 
         return;
+
     }
+
 
     if(name === "hold"){
 
@@ -1097,7 +1432,9 @@ function playSound(name){
         );
 
         return;
+
     }
+
 
     if(name === "prop"){
 
@@ -1109,7 +1446,9 @@ function playSound(name){
         );
 
         return;
+
     }
+
 
     if(name === "nest"){
 
@@ -1129,7 +1468,9 @@ function playSound(name){
         );
 
         return;
+
     }
+
 
     if(name === "hatch"){
 
@@ -1157,7 +1498,9 @@ function playSound(name){
         );
 
         return;
+
     }
+
 
     if(name === "happy"){
 
@@ -1177,7 +1520,9 @@ function playSound(name){
         );
 
         return;
+
     }
+
 
     if(name === "surprise"){
 
@@ -1187,8 +1532,15 @@ function playSound(name){
             "triangle",
             .045
         );
+
     }
+
 }
+
+
+/* =========================================================
+   감정
+========================================================= */
 
 const EMOTES = {
 
@@ -1239,7 +1591,9 @@ const EMOTES = {
         "••",
         "ᵕᴥᵕ"
     ]
+
 };
+
 
 function randomItem(array){
 
@@ -1249,9 +1603,12 @@ function randomItem(array){
             array.length
         )
     ];
+
 }
 
+
 let bubbleTimer = null;
+
 
 function showBubble(text){
 
@@ -1277,7 +1634,9 @@ function showBubble(text){
             },
             1300
         );
+
 }
+
 
 function showRandomEmote(type){
 
@@ -1287,7 +1646,13 @@ function showRandomEmote(type){
             EMOTES.normal
         )
     );
+
 }
+
+
+/* =========================================================
+   애니메이션 재생
+========================================================= */
 
 function replayClass(
     element,
@@ -1314,7 +1679,13 @@ function replayClass(
         },
         900
     );
+
 }
+
+
+/* =========================================================
+   효과
+========================================================= */
 
 function createEffect(
     image,
@@ -1346,6 +1717,7 @@ function createEffect(
         function(){
 
             img.remove();
+
         };
 
     effects.appendChild(
@@ -1360,7 +1732,13 @@ function createEffect(
         },
         900
     );
+
 }
+
+
+/* =========================================================
+   시작
+========================================================= */
 
 startButton.addEventListener(
     "pointerdown",
@@ -1377,6 +1755,12 @@ startButton.addEventListener(
 
         state.started =
             true;
+
+        owlLastTouchTime =
+            Date.now();
+
+        owlSleeping =
+            false;
 
         saveState();
 
@@ -1396,6 +1780,7 @@ startButton.addEventListener(
     }
 );
 
+
 if(state.started){
 
     startScreen.classList.add(
@@ -1407,21 +1792,48 @@ if(state.started){
     startScreen.classList.remove(
         "hidden"
     );
+
 }
+
+
+/* =========================================================
+   게임 업데이트
+========================================================= */
 
 function updateGame(){
 
     state.stage =
         getStage();
 
+    if(
+        state.stage !==
+        "owl_normal"
+    ){
+
+        owlSleeping =
+            false;
+
+        owlArea.classList.remove(
+            "sleeping"
+        );
+
+    }
+
     setOwlImage(
         stageImage(
             state.stage
         )
     );
+
 }
 
+
 updateGame();
+
+
+/* =========================================================
+   먹이
+========================================================= */
 
 document
     .getElementById("feedButton")
@@ -1447,7 +1859,9 @@ document
                 hatchTap();
 
                 return;
+
             }
+
 
             state.hunger =
                 Math.min(
@@ -1488,6 +1902,11 @@ document
         }
     );
 
+
+/* =========================================================
+   놀기
+========================================================= */
+
 document
     .getElementById("playButton")
     .addEventListener(
@@ -1512,7 +1931,9 @@ document
                 hatchTap();
 
                 return;
+
             }
+
 
             state.mood =
                 Math.min(
@@ -1549,6 +1970,11 @@ document
         }
     );
 
+
+/* =========================================================
+   쓰다듬기
+========================================================= */
+
 document
     .getElementById("petButton")
     .addEventListener(
@@ -1573,7 +1999,9 @@ document
                 hatchTap();
 
                 return;
+
             }
+
 
             state.mood =
                 Math.min(
@@ -1604,6 +2032,11 @@ document
         }
     );
 
+
+/* =========================================================
+   말걸기
+========================================================= */
+
 document
     .getElementById("talkButton")
     .addEventListener(
@@ -1619,6 +2052,7 @@ document
 
             if(!state.started)
                 return;
+
 
             const reactions = [
                 "normal",
@@ -1638,6 +2072,7 @@ document
                 type
             );
 
+
             if(type === "happy"){
 
                 playSound("happy");
@@ -1646,7 +2081,9 @@ document
                     owl,
                     "owl-jump"
                 );
+
             }
+
 
             if(type === "surprised"){
 
@@ -1656,6 +2093,7 @@ document
                     owl,
                     "owl-wiggle"
                 );
+
             }
 
         },
@@ -1663,6 +2101,11 @@ document
             passive:false
         }
     );
+
+
+/* =========================================================
+   성장 터치
+========================================================= */
 
 function hatchTap(){
 
@@ -1680,7 +2123,9 @@ function hatchTap(){
         );
 
         return;
+
     }
+
 
     state.growth += 1;
 
@@ -1689,7 +2134,9 @@ function hatchTap(){
     ){
 
         state.growth = 15;
+
     }
+
 
     state.stage =
         getStage();
@@ -1697,6 +2144,7 @@ function hatchTap(){
     saveState();
 
     updateGame();
+
 
     if(
         state.stage ===
@@ -1760,6 +2208,16 @@ function hatchTap(){
         "owl_normal"
     ){
 
+        owlLastTouchTime =
+            Date.now();
+
+        owlSleeping =
+            false;
+
+        owlArea.classList.remove(
+            "sleeping"
+        );
+
         showBubble(
             randomItem(
                 EMOTES.happy
@@ -1780,13 +2238,44 @@ function hatchTap(){
         playSound(
             "happy"
         );
+
     }
+
 }
+
+
+/* =========================================================
+   부엉이 짧게 누르기
+========================================================= */
 
 function owlShortTap(){
 
     if(!state.started)
         return;
+
+
+    /*
+        잠든 상태에서 누르면
+        무조건 먼저 깨운다.
+    */
+
+    if(owlSleeping){
+
+        wakeOwl();
+
+        return;
+
+    }
+
+
+    /*
+        부엉이를 누른 것이므로
+        잠 타이머를 다시 시작한다.
+    */
+
+    owlLastTouchTime =
+        Date.now();
+
 
     if(
         state.stage !==
@@ -1796,10 +2285,13 @@ function owlShortTap(){
         hatchTap();
 
         return;
+
     }
+
 
     const random =
         Math.random();
+
 
     if(random < .20){
 
@@ -1818,16 +2310,22 @@ function owlShortTap(){
         setTimeout(
             function(){
 
-                setOwlImage(
-                    "owl_normal.png"
-                );
+                if(!owlSleeping){
+
+                    setOwlImage(
+                        "owl_normal.png"
+                    );
+
+                }
 
             },
             1200
         );
 
         return;
+
     }
+
 
     if(random < .34){
 
@@ -1846,16 +2344,22 @@ function owlShortTap(){
         setTimeout(
             function(){
 
-                setOwlImage(
-                    "owl_normal.png"
-                );
+                if(!owlSleeping){
+
+                    setOwlImage(
+                        "owl_normal.png"
+                    );
+
+                }
 
             },
             1100
         );
 
         return;
+
     }
+
 
     if(random < .44){
 
@@ -1874,16 +2378,22 @@ function owlShortTap(){
         setTimeout(
             function(){
 
-                setOwlImage(
-                    "owl_normal.png"
-                );
+                if(!owlSleeping){
+
+                    setOwlImage(
+                        "owl_normal.png"
+                    );
+
+                }
 
             },
             1100
         );
 
         return;
+
     }
+
 
     if(random < .54){
 
@@ -1902,16 +2412,22 @@ function owlShortTap(){
         setTimeout(
             function(){
 
-                setOwlImage(
-                    "owl_normal.png"
-                );
+                if(!owlSleeping){
+
+                    setOwlImage(
+                        "owl_normal.png"
+                    );
+
+                }
 
             },
             900
         );
 
         return;
+
     }
+
 
     showRandomEmote(
         "normal"
@@ -1925,13 +2441,24 @@ function owlShortTap(){
         owl,
         "owl-jump"
     );
+
 }
 
+
+/* =========================================================
+   부엉이 꾹 누르기
+========================================================= */
+
 let pressTimer = null;
+
 let pressStartX = 0;
+
 let pressStartY = 0;
+
 let isLongPress = false;
+
 let pointerDown = false;
+
 
 owlArea.addEventListener(
     "pointerdown",
@@ -1945,8 +2472,32 @@ owlArea.addEventListener(
         if(!state.started)
             return;
 
+
+        /*
+            부엉이를 누른 순간
+            잠 타이머 리셋
+        */
+
+        owlLastTouchTime =
+            Date.now();
+
+
+        /*
+            잠들어 있다면
+            즉시 깨운다.
+        */
+
+        if(owlSleeping){
+
+            wakeOwl();
+
+        }
+
+
         pointerDown = true;
+
         isLongPress = false;
+
 
         pressStartX =
             event.clientX;
@@ -1954,9 +2505,11 @@ owlArea.addEventListener(
         pressStartY =
             event.clientY;
 
+
         clearTimeout(
             pressTimer
         );
+
 
         try{
 
@@ -1965,6 +2518,12 @@ owlArea.addEventListener(
             );
 
         }catch(error){}
+
+
+        /*
+            300ms 이상 누르면
+            기존 꾹 누르기 기능 실행
+        */
 
         pressTimer =
             setTimeout(
@@ -2003,6 +2562,11 @@ owlArea.addEventListener(
     }
 );
 
+
+/* =========================================================
+   이동 감지
+========================================================= */
+
 owlArea.addEventListener(
     "pointermove",
     function(event){
@@ -2026,6 +2590,7 @@ owlArea.addEventListener(
                 dy * dy
             );
 
+
         if(
             distance > 12 &&
             !isLongPress
@@ -2034,6 +2599,7 @@ owlArea.addEventListener(
             clearTimeout(
                 pressTimer
             );
+
         }
 
     },
@@ -2041,6 +2607,11 @@ owlArea.addEventListener(
         passive:false
     }
 );
+
+
+/* =========================================================
+   부엉이 터치 종료
+========================================================= */
 
 function finishOwlPress(event){
 
@@ -2051,38 +2622,60 @@ function finishOwlPress(event){
         pressTimer
     );
 
+
     if(!pointerDown)
         return;
 
+
     pointerDown = false;
+
 
     owlArea.classList.remove(
         "long-press"
     );
 
+
     if(isLongPress){
 
         isLongPress = false;
 
-        setOwlImage(
-            "owl_normal.png"
-        );
 
-        showRandomEmote(
-            "love"
-        );
+        /*
+            꾹 누르기를 끝냈어도
+            타이머는 계속 리셋된 상태.
+        */
 
-        playSound(
-            "pet"
-        );
+        owlLastTouchTime =
+            Date.now();
+
+
+        if(!owlSleeping){
+
+            setOwlImage(
+                "owl_normal.png"
+            );
+
+            showRandomEmote(
+                "love"
+            );
+
+            playSound(
+                "pet"
+            );
+
+        }
 
         return;
+
     }
+
 
     isLongPress = false;
 
     owlShortTap();
+
 }
+
 
 owlArea.addEventListener(
     "pointerup",
@@ -2092,6 +2685,7 @@ owlArea.addEventListener(
     }
 );
 
+
 owlArea.addEventListener(
     "pointercancel",
     finishOwlPress,
@@ -2099,6 +2693,11 @@ owlArea.addEventListener(
         passive:false
     }
 );
+
+
+/* =========================================================
+   둥지
+========================================================= */
 
 nest.addEventListener(
     "pointerdown",
@@ -2134,6 +2733,11 @@ nest.addEventListener(
         passive:false
     }
 );
+
+
+/* =========================================================
+   소품
+========================================================= */
 
 function setupProp(
     element,
@@ -2171,27 +2775,33 @@ function setupProp(
             passive:false
         }
     );
+
 }
+
 
 setupProp(
     shelf,
     "curious"
 );
 
+
 setupProp(
     booksStanding,
     "normal"
 );
+
 
 setupProp(
     booksHorizontal,
     "curious"
 );
 
+
 setupProp(
     plant,
     "normal"
 );
+
 
 setupProp(
     lamp,
@@ -2199,17 +2809,25 @@ setupProp(
     "prop"
 );
 
+
 setupProp(
     note,
     "curious"
 );
+
+
+/* =========================================================
+   기본 브라우저 동작 차단
+========================================================= */
 
 function preventNative(event){
 
     event.preventDefault();
 
     return false;
+
 }
+
 
 document.addEventListener(
     "contextmenu",
@@ -2219,6 +2837,7 @@ document.addEventListener(
     }
 );
 
+
 document.addEventListener(
     "selectstart",
     preventNative,
@@ -2226,6 +2845,7 @@ document.addEventListener(
         passive:false
     }
 );
+
 
 document.addEventListener(
     "dragstart",
@@ -2235,6 +2855,7 @@ document.addEventListener(
     }
 );
 
+
 document.addEventListener(
     "gesturestart",
     preventNative,
@@ -2242,6 +2863,7 @@ document.addEventListener(
         passive:false
     }
 );
+
 
 document.addEventListener(
     "gesturechange",
@@ -2251,6 +2873,7 @@ document.addEventListener(
     }
 );
 
+
 document.addEventListener(
     "gestureend",
     preventNative,
@@ -2258,6 +2881,11 @@ document.addEventListener(
         passive:false
     }
 );
+
+
+/* =========================================================
+   멀티터치 방지
+========================================================= */
 
 document.addEventListener(
     "touchstart",
@@ -2269,6 +2897,7 @@ document.addEventListener(
         ){
 
             event.preventDefault();
+
         }
 
     },
@@ -2276,6 +2905,7 @@ document.addEventListener(
         passive:false
     }
 );
+
 
 document.addEventListener(
     "touchmove",
@@ -2287,6 +2917,7 @@ document.addEventListener(
         ){
 
             event.preventDefault();
+
         }
 
     },
@@ -2295,7 +2926,9 @@ document.addEventListener(
     }
 );
 
+
 let lastTouchTime = 0;
+
 
 document.addEventListener(
     "touchend",
@@ -2311,6 +2944,7 @@ document.addEventListener(
         ){
 
             event.preventDefault();
+
         }
 
         lastTouchTime =
@@ -2321,6 +2955,11 @@ document.addEventListener(
         passive:false
     }
 );
+
+
+/* =========================================================
+   이미지 기본 동작 차단
+========================================================= */
 
 document
     .querySelectorAll("img")
@@ -2347,8 +2986,10 @@ document
                     passive:false
                 }
             );
+
         }
     );
+
 
 [
     game,
@@ -2386,8 +3027,14 @@ document
                 passive:false
             }
         );
+
     }
 );
+
+
+/* =========================================================
+   낮 / 밤 배경
+========================================================= */
 
 function updateDayNight(){
 
@@ -2397,6 +3044,7 @@ function updateDayNight(){
     const night =
         hour >= 19 ||
         hour < 6;
+
 
     if(night){
 
@@ -2421,6 +3069,7 @@ function updateDayNight(){
                 },
                 180
             );
+
         }
 
         game.classList.add(
@@ -2450,25 +3099,36 @@ function updateDayNight(){
                 },
                 180
             );
+
         }
 
         game.classList.remove(
             "night"
         );
+
     }
+
 }
 
+
 updateDayNight();
+
 
 setInterval(
     updateDayNight,
     60000
 );
 
+
+/* =========================================================
+   능력치
+========================================================= */
+
 function updateStats(){
 
     if(!state.started)
         return;
+
 
     const now =
         Date.now();
@@ -2477,14 +3137,17 @@ function updateStats(){
         now -
         state.lastUpdate;
 
+
     if(elapsed < 60000)
         return;
+
 
     const minutes =
         Math.floor(
             elapsed /
             60000
         );
+
 
     if(
         state.stage ===
@@ -2506,20 +3169,31 @@ function updateStats(){
                     minutes / 2
                 )
             );
+
     }
 
+
     saveState();
+
 }
+
 
 setInterval(
     updateStats,
     60000
 );
 
+
+/* =========================================================
+   기존 랜덤 행동
+   잠든 상태에서는 절대 실행하지 않음
+========================================================= */
+
 function idleBehavior(){
 
     if(!state.started)
         return;
+
 
     if(
         state.stage !==
@@ -2527,8 +3201,18 @@ function idleBehavior(){
     )
         return;
 
+
+    /*
+        잠들어 있으면 랜덤 행동 금지
+    */
+
+    if(owlSleeping)
+        return;
+
+
     const random =
         Math.random();
+
 
     if(random < .22){
 
@@ -2543,16 +3227,22 @@ function idleBehavior(){
         setTimeout(
             function(){
 
-                setOwlImage(
-                    "owl_normal.png"
-                );
+                if(!owlSleeping){
+
+                    setOwlImage(
+                        "owl_normal.png"
+                    );
+
+                }
 
             },
             1300
         );
 
         return;
+
     }
+
 
     if(random < .38){
 
@@ -2567,16 +3257,22 @@ function idleBehavior(){
         setTimeout(
             function(){
 
-                setOwlImage(
-                    "owl_normal.png"
-                );
+                if(!owlSleeping){
+
+                    setOwlImage(
+                        "owl_normal.png"
+                    );
+
+                }
 
             },
             1200
         );
 
         return;
+
     }
+
 
     if(random < .50){
 
@@ -2591,44 +3287,40 @@ function idleBehavior(){
         setTimeout(
             function(){
 
-                setOwlImage(
-                    "owl_normal.png"
-                );
+                if(!owlSleeping){
+
+                    setOwlImage(
+                        "owl_normal.png"
+                    );
+
+                }
 
             },
             1400
         );
 
         return;
+
     }
 
-    if(random < .62){
 
-        setOwlImage(
-            "owl_sleep.png"
-        );
+    /*
+        기존 랜덤 수면 행동은 삭제.
+        이제 15초/30초 무입력으로만 잠든다.
+    */
 
-        showRandomEmote(
-            "sleepy"
-        );
-
-        setTimeout(
-            function(){
-
-                setOwlImage(
-                    "owl_normal.png"
-                );
-
-            },
-            1800
-        );
-    }
 }
+
 
 setInterval(
     idleBehavior,
     12000
 );
+
+
+/* =========================================================
+   화면을 다시 열었을 때
+========================================================= */
 
 document.addEventListener(
     "visibilitychange",
@@ -2640,16 +3332,28 @@ document.addEventListener(
 
             updateDayNight();
 
+            updateSleepTimeState();
+
+            checkOwlSleep();
+
             updateGame();
+
         }
+
     }
 );
+
+
+/* =========================================================
+   페이지 종료
+========================================================= */
 
 window.addEventListener(
     "beforeunload",
     function(){
 
         saveState();
+
     }
 );
 
