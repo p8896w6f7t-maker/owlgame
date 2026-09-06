@@ -124,25 +124,27 @@ body{
 
 /* =========================================================
    선반
+   책보다 앞으로
 ========================================================= */
 
 #shelf{
     width:39%;
     left:2%;
     top:24%;
-    z-index:6;
+    z-index:7;
 }
 
 
 /* =========================================================
    선반 위 책
+   선반보다 뒤로
 ========================================================= */
 
 #booksStanding{
     width:19%;
     left:9%;
     top:19.5%;
-    z-index:7;
+    z-index:5;
     transform-origin:50% 100%;
 }
 
@@ -731,6 +733,61 @@ body{
 
 
 /* =========================================================
+   다시시작 버튼
+   왼쪽 위 작은 버튼
+========================================================= */
+
+#restartButton{
+
+    position:absolute;
+
+    left:2.8%;
+    top:2.8%;
+
+    z-index:80;
+
+    border:2px solid #5b3b2b;
+    border-radius:9px;
+
+    padding:5px 8px;
+
+    background:rgba(255,244,223,.92);
+
+    color:#4c3023;
+
+    font-size:
+        clamp(10px,2.3vw,14px);
+
+    font-weight:900;
+
+    line-height:1;
+
+    box-shadow:
+        0 2px 0
+        rgba(65,40,28,.25);
+
+    cursor:pointer;
+
+    touch-action:none;
+
+    -webkit-user-select:none;
+    user-select:none;
+
+    -webkit-touch-callout:none;
+}
+
+#restartButton:active{
+
+    transform:
+        translateY(1px);
+
+    box-shadow:
+        0 1px 0
+        rgba(65,40,28,.25);
+}
+
+
+/* =========================================================
    시작 화면
 ========================================================= */
 
@@ -1031,6 +1088,17 @@ body{
     </div>
 
 
+    <!-- 다시시작 버튼 -->
+
+    <button
+        id="restartButton"
+        type="button"
+        aria-label="다시시작"
+    >
+        다시시작
+    </button>
+
+
     <div id="startScreen">
 
         <div id="startCard">
@@ -1097,6 +1165,9 @@ const startScreen =
 
 const startButton =
     document.getElementById("startButton");
+
+const restartButton =
+    document.getElementById("restartButton");
 
 const shelf =
     document.getElementById("shelf");
@@ -2148,6 +2219,83 @@ startButton.addEventListener(
         showBubble(
             "*⸌☻ັ⸍*"
         );
+
+    },
+    {
+        passive:false
+    }
+);
+
+
+/* =========================================================
+   다시시작
+========================================================= */
+
+restartButton.addEventListener(
+    "pointerdown",
+    function(event){
+
+        event.preventDefault();
+        event.stopPropagation();
+
+
+        initAudio();
+
+
+        playSound(
+            "button"
+        );
+
+
+        localStorage.removeItem(
+            STORAGE_KEY
+        );
+
+
+        state = {
+            ...defaultState,
+            lastUpdate:Date.now()
+        };
+
+
+        owlSleeping =
+            false;
+
+
+        owlLastTouchTime =
+            Date.now();
+
+
+        owlArea.classList.remove(
+            "sleeping",
+            "long-press"
+        );
+
+
+        clearTimeout(
+            pressTimer
+        );
+
+
+        pointerDown =
+            false;
+
+
+        isLongPress =
+            false;
+
+
+        setOwlImage(
+            "egg.png"
+        );
+
+
+        startScreen.classList.remove(
+            "hidden"
+        );
+
+
+        updateGame();
 
     },
     {
@@ -3522,7 +3670,8 @@ document
     booksHorizontal,
     plant,
     lamp,
-    note
+    note,
+    restartButton
 ].forEach(
     function(element){
 
